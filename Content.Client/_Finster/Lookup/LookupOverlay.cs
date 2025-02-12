@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Client.Examine;
 using Content.Client.Gameplay;
+using Content.KayMisaZlevels.Client;
 using Content.Shared.Maps;
 using Content.Shared.Parallax.Biomes;
 using Robust.Client.Graphics;
@@ -49,17 +50,19 @@ public sealed class LookupOverlay : Overlay
         _font = new VectorFont(_cache.GetResource<FontResource>("/Fonts/bettervcr.ttf"), _fontScale);
     }
 
+    /*
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
         var mapUid = _mapManager.GetMapEntityId(args.MapId);
 
         return _entManager.HasComponent<BiomeComponent>(mapUid);
     }
+    */
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        var viewport = (args.ViewportControl as Control);
-        var uiScale = (args.ViewportControl as Control)?.UIScale ?? 1f;
+        var viewport = (args.ViewportControl as ZScalingViewport);
+        var uiScale = (args.ViewportControl as ZScalingViewport)?.UIScale ?? 1f;
 
         var mouseScreenPos = _inputManager.MouseScreenPosition;
         var mousePos = _eyeManager.ScreenToMap(mouseScreenPos);
@@ -74,6 +77,12 @@ public sealed class LookupOverlay : Overlay
 
         var strContent = "";
         //var nodePos = _maps.WorldToTile(mapUid, grid, mousePos.Position);
+
+        if (_player.LocalEntity is null)
+            return;
+
+        if (!_examine.CanExamine(_player.LocalEntity.Value, mousePos))
+            return;
 
         if (mousePos != MapCoordinates.Nullspace)
         {
@@ -98,19 +107,26 @@ public sealed class LookupOverlay : Overlay
         if (entityToClick is not null &&
             _entManager.TryGetComponent<MetaDataComponent>(entityToClick, out var metaComp))
         {
-            if (_player.LocalEntity is not null && _examine.CanExamine(_player.LocalEntity.Value, entityToClick.Value))
-                strContent = metaComp.EntityName;
+            //if (_examine.CanExamine(_player.LocalEntity.Value, entityToClick.Value))
+            strContent = metaComp.EntityName;
         }
         else if (tile is not null)
         {
             var tileDef = (ContentTileDefinition) _tileDefManager[tile.Value.Tile.TypeId];
             if (tileDef.ID != ContentTileDefinition.SpaceID)
-                strContent = $"{tileDef.Name}";
+                strContent = $"{Loc.GetString(tileDef.Name)}";
         }
 
         if (viewport is null)
             return;
 
-        args.ScreenHandle.DrawString(_font, new Vector2(viewport.Size.X - (viewport.Size.X / 2), viewport.Size.Y - (_fontScale * uiScale)), strContent, uiScale, Color.Gray);
+        var dimensions = args.ScreenHandle.GetDimensions(_font, strContent, uiScale);
+        var drawBox = viewport.GetDrawBox();
+        var drawBoxGlobal = drawBox.Translated(viewport.GlobalPixelPosition);
+        //var center = viewport.PixelSizeBox.Center; // drawBoxGlobal.Center;
+        var center = drawBoxGlobal.Right - ((drawBoxGlobal.Right - drawBoxGlobal.Left) / 2);
+        var bottom = viewport.PixelSizeBox.Bottom;
+
+        args.ScreenHandle.DrawString(_font, new Vector2(center, bottom) - new Vector2(dimensions.X / 2, dimensions.Y + (_fontScale / 2)), strContent, uiScale, Color.Gray);
     }
 }
