@@ -68,6 +68,9 @@ public sealed class LookupOverlay : Overlay
 
     protected override void Draw(in OverlayDrawArgs args)
     {
+        if (!_showHint)
+            return;
+
         var viewport = (args.ViewportControl as ZScalingViewport);
         var uiScale = (args.ViewportControl as ZScalingViewport)?.UIScale ?? 1f;
 
