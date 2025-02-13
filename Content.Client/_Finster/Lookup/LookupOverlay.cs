@@ -56,20 +56,13 @@ public sealed class LookupOverlay : Overlay
         }, true);
     }
 
-    /*
     protected override bool BeforeDraw(in OverlayDrawArgs args)
     {
-        var mapUid = _mapManager.GetMapEntityId(args.MapId);
-
-        return _entManager.HasComponent<BiomeComponent>(mapUid);
+        return _showHint;
     }
-    */
 
     protected override void Draw(in OverlayDrawArgs args)
     {
-        if (!_showHint)
-            return;
-
         var viewport = (args.ViewportControl as ZScalingViewport);
         var uiScale = (args.ViewportControl as ZScalingViewport)?.UIScale ?? 1f;
 
