@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Client.Examine;
 using Content.Client.Gameplay;
 using Content.KayMisaZlevels.Client;
+using Content.Shared.CCVar;
 using Content.Shared.Maps;
 using Content.Shared.Parallax.Biomes;
 using Robust.Client.Graphics;
@@ -10,6 +11,7 @@ using Robust.Client.Player;
 using Robust.Client.ResourceManagement;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
+using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.Map;
 
@@ -27,6 +29,7 @@ public sealed class LookupOverlay : Overlay
     [Dependency] private readonly IResourceCache _cache = default!;
     [Dependency] private readonly IStateManager _stateManager = default!;
     [Dependency] private readonly ITileDefinitionManager _tileDefManager = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     // private BiomeSystem _biomes;
     private SharedMapSystem _maps;
@@ -36,6 +39,7 @@ public sealed class LookupOverlay : Overlay
 
     private Font _font;
     private int _fontScale = 16;
+    private bool _showHint = true;
 
     public LookupOverlay()
     {
@@ -48,6 +52,9 @@ public sealed class LookupOverlay : Overlay
         _examine = _entManager.System<ExamineSystem>();
 
         _font = new VectorFont(_cache.GetResource<FontResource>("/Fonts/bettervcr.ttf"), _fontScale);
+        _cfg.OnValueChanged(CCVars.ShowLookupHint, (toggle) => {
+            _showHint = toggle;
+        }, true);
     }
 
     /*

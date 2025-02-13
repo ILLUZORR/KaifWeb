@@ -77,6 +77,7 @@
                        StyleClasses="LabelKeyText"/>
                 <CheckBox Name="ModernProgressBar" Text="{Loc 'ui-options-modern-progress-bar'}" />
                 <!-- <CheckBox Name="ToggleWalk" Text="{Loc 'ui-options-hotkey-toggle-walk'}" /> -->
+                <CheckBox Name="ShowLookupHint" Text="{Loc 'ui-options-show-lookup-hint'}" />
             </BoxContainer>
         </ScrollContainer>
         <controls:StripeBack HasBottomEdge="False" HasMargins="False">

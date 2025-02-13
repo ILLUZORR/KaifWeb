@@ -27,4 +27,11 @@ public sealed partial class CCVars
         CVarDef.Create("zlayers.background_shader", true, CVar.CLIENT | CVar.REPLICATED);
 
     # endregion
+
+    # region HUD
+
+    public static readonly CVarDef<bool> ShowLookupHint =
+        CVarDef.Create("hud.show_lookup_hint", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+    # endregion
 }
