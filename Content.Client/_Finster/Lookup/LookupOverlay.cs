@@ -31,7 +31,6 @@ public sealed class LookupOverlay : Overlay
     [Dependency] private readonly ITileDefinitionManager _tileDefManager = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
 
-    // private BiomeSystem _biomes;
     private SharedMapSystem _maps;
     private TileSystem _tile;
     private SharedTransformSystem _xform;
@@ -51,7 +50,7 @@ public sealed class LookupOverlay : Overlay
         _xform = _entManager.System<SharedTransformSystem>();
         _examine = _entManager.System<ExamineSystem>();
 
-        _font = new VectorFont(_cache.GetResource<FontResource>("/Fonts/bettervcr.ttf"), _fontScale);
+        _font = new VectorFont(_cache.GetResource<FontResource>("/Fonts/home-video-font/HomeVideo-BLG6G.ttf"), _fontScale);
         _cfg.OnValueChanged(CCVars.ShowLookupHint, (toggle) => {
             _showHint = toggle;
         }, true);

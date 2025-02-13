@@ -172,4 +172,8 @@
   id: Fifaks
   path: /Fonts/Fifaks/Fifaks.ttf
 
+- type: font
+  id: HomeVideo
+  path: /Fonts/home-video-font/HomeVideo-BLG6G.ttf
+
 # FINSTER EDIT END
