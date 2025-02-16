@@ -62,7 +62,7 @@ public sealed class ViewportUserInterfaceOverlay : Overlay
     {
         _buffer.Dispose();
         _buffer = _clyde.CreateRenderTarget(
-            new Vector2i(_viewportSize.X * EyeManager.PixelsPerMeter, _viewportSize.Y * EyeManager.PixelsPerMeter),
+            _contentSize,
             RenderTargetColorFormat.Rgba8Srgb);
     }
 
