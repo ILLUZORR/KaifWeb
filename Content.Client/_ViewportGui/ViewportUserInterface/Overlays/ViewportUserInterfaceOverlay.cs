@@ -26,11 +26,15 @@ public sealed class ViewportUserInterfaceOverlay : Overlay
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
     [Dependency] private readonly IViewportUserInterfaceManager _vpUIManager = default!;
+    [Dependency] private readonly IClyde _clyde = default!;
 
     private ViewportUIController _viewportUIController;
 
     private Vector2i _viewportPosition;
     private Vector2i _viewportSize;
+    private Vector2i _contentSize;
+
+    private IRenderTexture _buffer;
 
     public ViewportUserInterfaceOverlay()
     {
@@ -41,8 +45,32 @@ public sealed class ViewportUserInterfaceOverlay : Overlay
         // TODO: Move position definition into CVar
         // Or into prototype, instead of using xaml or avalonia
         _viewportPosition = new Vector2i(-3, 0);
+        _contentSize = new Vector2i((_viewportSize.X + 4) * EyeManager.PixelsPerMeter, _viewportSize.Y * EyeManager.PixelsPerMeter);
 
-        _cfg.OnValueChanged(CCVars.ViewportWidth, (newValue) => { _viewportSize.X = newValue; });
+        _cfg.OnValueChanged(CCVars.ViewportWidth, (newValue) =>
+        {
+            _viewportSize.X = newValue;
+            RestoreBuffer();
+        });
+
+        _buffer = _clyde.CreateRenderTarget(
+            _contentSize,
+            RenderTargetColorFormat.Rgba8Srgb);
+    }
+
+    private void RestoreBuffer()
+    {
+        _buffer.Dispose();
+        _buffer = _clyde.CreateRenderTarget(
+            new Vector2i(_viewportSize.X * EyeManager.PixelsPerMeter, _viewportSize.Y * EyeManager.PixelsPerMeter),
+            RenderTargetColorFormat.Rgba8Srgb);
+    }
+
+    protected override void DisposeBehavior()
+    {
+        base.DisposeBehavior();
+
+        _buffer.Dispose();
     }
 
     /*
@@ -67,22 +95,18 @@ public sealed class ViewportUserInterfaceOverlay : Overlay
         var drawBoxGlobalWidth = (drawBoxGlobal.Right - drawBoxGlobal.Left) + 0.0f;
         var drawBoxScale = drawBoxGlobalWidth / (_viewportSize.X * EyeManager.PixelsPerMeter);
 
-        // TODO: Я думаю HUD должен сайзиться немного по иному. Возможно на уровне CVar'ов или чего-то подобного.
-        // Вместо того чтобы вручную прописывать размеры вьюпорта (относительно основного вьюпорта окна), стоило бы это отдать на конфиг.
-        //
-        // Или как вариант сунуть это в прототипы! Я думаю создавать UI на уровне прототипов будет лучше, чем Xaml
-        var contentSize = new Vector2i((_viewportSize.X + 4) * EyeManager.PixelsPerMeter, _viewportSize.Y * EyeManager.PixelsPerMeter);
-
         var boundPositionTopLeft = new Vector2(
             drawBoxGlobal.Left + ((_viewportPosition.X * EyeManager.PixelsPerMeter) * drawBoxScale),
             drawBoxGlobal.Top + ((_viewportPosition.Y * EyeManager.PixelsPerMeter) * drawBoxScale));
         var boundPositionBottomRight = new Vector2(
-            boundPositionTopLeft.X + (contentSize.X * drawBoxScale),
-            boundPositionTopLeft.Y + (contentSize.Y * drawBoxScale));
+            boundPositionTopLeft.X + (_contentSize.X * drawBoxScale),
+            boundPositionTopLeft.Y + (_contentSize.Y * drawBoxScale));
 
         var boundSize = new UIBox2(boundPositionTopLeft, boundPositionBottomRight);
 
-        var drawingArgs = new ViewportUIDrawArgs(contentSize, boundSize, args);
+        var drawingArgs = new ViewportUIDrawArgs(_buffer, _contentSize, boundSize, drawBoxScale, handle);
         _vpUIManager.Draw(drawingArgs);
+
+        handle.DrawTextureRect(_buffer.Texture, boundSize);
     }
 }
