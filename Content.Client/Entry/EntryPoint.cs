@@ -39,6 +39,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Replays;
 using Robust.Shared.Timing;
 using Content.Shared.CCVar;
+using Content.Client._ViewportGui.ViewportUserInterface;
 
 namespace Content.Client.Entry
 {
@@ -77,6 +78,7 @@ namespace Content.Client.Entry
         [Dependency] private readonly DiscordAuthManager _discordAuth = default!;
         [Dependency] private readonly ContentReplayPlaybackManager _replayMan = default!;
         [Dependency] private readonly DebugMonitorManager _debugMonitorManager = default!;
+        [Dependency] private readonly IViewportUserInterfaceManager _viewportUserInterfaceManager = default!;
 
         public override void Init()
         {
@@ -177,6 +179,9 @@ namespace Content.Client.Entry
             _documentParsingManager.Initialize();
             _joinQueue.Initialize();
             _discordAuth.Initialize();
+            // VPGui edit
+            _viewportUserInterfaceManager.Initialize();
+            // VPGui edit end
 
             _baseClient.RunLevelChanged += (_, args) =>
             {

@@ -28,6 +28,7 @@ using Content.Shared.Chat;
 using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Players.RateLimiting;
 using Robust.Client.GameObjects;
+using Content.Client._ViewportGui.ViewportUserInterface; // VPGui edit
 
 namespace Content.Client.IoC
 {
@@ -51,6 +52,7 @@ namespace Content.Client.IoC
             collection.Register<IVoteManager, VoteManager>();
             collection.Register<ChangelogManager, ChangelogManager>();
             collection.Register<ViewportManager, ViewportManager>();
+            collection.Register<IViewportUserInterfaceManager, ViewportUserInterfaceManager>(); // VPGui edit
             collection.Register<ISharedAdminLogManager, SharedAdminLogManager>();
             collection.Register<GhostKickManager>();
             collection.Register<ExtendedDisconnectInformationManager>();
