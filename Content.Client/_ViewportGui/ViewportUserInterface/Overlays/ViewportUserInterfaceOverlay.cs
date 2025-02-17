@@ -15,6 +15,7 @@ using Robust.Client.UserInterface;
 using Robust.Shared.Configuration;
 using Robust.Shared.Enums;
 using Robust.Shared.Map;
+using Robust.Shared.Timing;
 
 namespace Content.Client._ViewportGui.ViewportUserInterface.Overlays;
 
@@ -79,6 +80,13 @@ public sealed class ViewportUserInterfaceOverlay : Overlay
         return true;
     }
     */
+
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        _vpUIManager.FrameUpdate(args);
+
+        base.FrameUpdate(args);
+    }
 
     protected override void Draw(in OverlayDrawArgs args)
     {
