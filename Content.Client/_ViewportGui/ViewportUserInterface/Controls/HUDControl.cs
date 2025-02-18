@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using Robust.Shared.Timing;
 
 namespace Content.Client._ViewportGui.ViewportUserInterface.UI;
 
@@ -15,12 +16,12 @@ public class HUDControl : IDisposable
     public event Action<HUDControl>? OnChildRemoved;
 
     public HUDControl? Parent { get; private set; }
-
     public HUDOrderedChildCollection Children { get; }
-
     public int ChildCount => OrderedChildren.Count;
 
     public string? Name { get; set; }
+
+    public HUDMouseFilterMode MouseFilter { get; set; } = HUDMouseFilterMode.Ignore;
 
     public HUDControl()
     {
@@ -145,6 +146,13 @@ public class HUDControl : IDisposable
         Parent?.RemoveChild(this);
     }
 
+    /// <summary>
+    ///     This is called before every render frame.
+    /// </summary>
+    public virtual void FrameUpdate(FrameEventArgs args)
+    {
+    }
+
     public virtual void Draw(in ViewportUIDrawArgs args)
     {
         foreach (var child in Children.ToArray())
@@ -156,6 +164,28 @@ public class HUDControl : IDisposable
     public virtual void Dispose()
     {
     }
+}
+
+public enum HUDMouseFilterMode : byte
+{
+    /// <summary>
+    ///     The control will be able to receive mouse buttons events.
+    ///     Furthermore, if a control with this mode does get clicked,
+    ///     the event automatically gets marked as handled after every other candidate has been tried,
+    ///     so that the rest of the game does not receive it.
+    /// </summary>
+    Pass = 1,
+
+    /// <summary>
+    ///     The control will be able to receive mouse button events like <see cref="Pass" />,
+    ///     but the event will be stopped and handled even if the relevant events do not handle it.
+    /// </summary>
+    Stop = 0,
+
+    /// <summary>
+    ///     The control will not be considered at all, and will not have any effects.
+    /// </summary>
+    Ignore = 2,
 }
 
 public sealed class HUDOrderedChildCollection : ICollection<HUDControl>, IReadOnlyCollection<HUDControl>
