@@ -1,7 +1,0 @@
-- type: characterItemGroup
-  id: N14LoadoutNeck
-  items:
-    - type: loadout
-      id: N14LoadoutNeckCloakLeather
-    - type: loadout
-      id: N14LoadoutNeckMantleLeather

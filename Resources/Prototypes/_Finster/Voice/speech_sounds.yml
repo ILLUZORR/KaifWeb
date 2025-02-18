@@ -1,8 +1,0 @@
-- type: speechSounds
-  id: DeathnetMan
-  saySound:
-    collection: DeathnetManSay
-  askSound:
-    path: /Audio/_Finster/Voice/deathnet/man3.ogg
-  exclaimSound:
-    collection: DeathnetManExclaim

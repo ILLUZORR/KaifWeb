@@ -1,7 +1,0 @@
-#- type: lobbyBackground
-#  id: BerserkMirrored
-#  background: /Textures/LobbyScreens/berserkmirrored.webp
-
-- type: lobbyBackground
-  id: Finster
-  background: /Textures/LobbyScreens/finster.webp
