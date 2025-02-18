@@ -1,7 +1,8 @@
 
+using Content.Client._ViewportGui.ViewportUserInterface.Overlays;
 using Robust.Client.Graphics;
 
-namespace Content.Client._ViewportGui.ViewportUserInterface.Overlays;
+namespace Content.Client._ViewportGui.ViewportUserInterface.Systems;
 public sealed class ViewportUserInterfaceSystem : EntitySystem
 {
     [Dependency] private readonly IOverlayManager _overlay = default!;

@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Client.Examine;
 using Content.Client.Gameplay;
+using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Viewport;
 using Content.KayMisaZlevels.Client;
 using Content.Shared.CCVar;
@@ -23,13 +24,13 @@ public sealed class ViewportUserInterfaceOverlay : Overlay
 {
     public override OverlaySpace Space => OverlaySpace.ScreenSpace;
 
-    [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
     [Dependency] private readonly IViewportUserInterfaceManager _vpUIManager = default!;
     [Dependency] private readonly IClyde _clyde = default!;
 
     private ViewportUIController _viewportUIController;
+    private ZScalingViewport? _viewport;
 
     private Vector2i _viewportPosition;
     private Vector2i _viewportSize;
@@ -42,9 +43,13 @@ public sealed class ViewportUserInterfaceOverlay : Overlay
         IoCManager.InjectDependencies(this);
 
         _viewportUIController = _uiManager.GetUIController<ViewportUIController>();
-        _viewportSize = new Vector2i(_cfg.GetCVar(CCVars.ViewportWidth), ViewportUIController.ViewportHeight);
+
         // TODO: Move position definition into CVar
         // Or into prototype, instead of using xaml or avalonia
+        // Also, why we define it in overlay too, instead manager?
+        // Well, because we need define _buffer with _contentSize.
+        // Maybe i rewrite it later...
+        _viewportSize = new Vector2i(_cfg.GetCVar(CCVars.ViewportWidth), ViewportUIController.ViewportHeight);
         _viewportPosition = new Vector2i(-3, 0);
         _contentSize = new Vector2i((_viewportSize.X + 4) * EyeManager.PixelsPerMeter, _viewportSize.Y * EyeManager.PixelsPerMeter);
 
@@ -57,6 +62,8 @@ public sealed class ViewportUserInterfaceOverlay : Overlay
         _buffer = _clyde.CreateRenderTarget(
             _contentSize,
             RenderTargetColorFormat.Rgba8Srgb);
+
+        ResolveViewport();
     }
 
     private void RestoreBuffer()
@@ -65,6 +72,25 @@ public sealed class ViewportUserInterfaceOverlay : Overlay
         _buffer = _clyde.CreateRenderTarget(
             _contentSize,
             RenderTargetColorFormat.Rgba8Srgb);
+    }
+
+    private void ResolveViewport(ZScalingViewport? control = null)
+    {
+        // FIXME: Need send some information into VPGui manager for KeyBind events.
+        // Need refactor or rewrite idk just make it better than this shit
+        _vpUIManager.DrawingInfo = new ViewportDrawingInfo(_viewportPosition, _viewportSize, _contentSize);
+
+        // What the fuck i am douing?
+        var mainViewport = _uiManager.ActiveScreen?.GetWidget<MainViewport>();
+        if (mainViewport is null)
+            return;
+
+        if (control is null)
+            _viewport = mainViewport.Viewport;
+        else
+            _viewport = control;
+
+        _vpUIManager.Viewport = _viewport;
     }
 
     protected override void DisposeBehavior()
@@ -93,28 +119,22 @@ public sealed class ViewportUserInterfaceOverlay : Overlay
         var handle = args.ScreenHandle;
         var viewport = (args.ViewportControl as ZScalingViewport);
         var uiScale = (args.ViewportControl as ZScalingViewport)?.UIScale ?? 1f;
-        var mouseScreenPos = _inputManager.MouseScreenPosition;
 
         if (viewport is null)
             return;
+        if (_viewport is null)
+        {
+            ResolveViewport(_viewport);
+            return; // Because we can draw in next frame
+        }
 
-        var drawBox = viewport.GetDrawBox();
-        var drawBoxGlobal = drawBox.Translated(viewport.GlobalPixelPosition);
-        var drawBoxGlobalWidth = (drawBoxGlobal.Right - drawBoxGlobal.Left) + 0.0f;
-        var drawBoxScale = drawBoxGlobalWidth / (_viewportSize.X * EyeManager.PixelsPerMeter);
+        var drawBounds = _vpUIManager.GetDrawingBounds();
+        if (drawBounds is null)
+            return;
 
-        var boundPositionTopLeft = new Vector2(
-            drawBoxGlobal.Left + ((_viewportPosition.X * EyeManager.PixelsPerMeter) * drawBoxScale),
-            drawBoxGlobal.Top + ((_viewportPosition.Y * EyeManager.PixelsPerMeter) * drawBoxScale));
-        var boundPositionBottomRight = new Vector2(
-            boundPositionTopLeft.X + (_contentSize.X * drawBoxScale),
-            boundPositionTopLeft.Y + (_contentSize.Y * drawBoxScale));
-
-        var boundSize = new UIBox2(boundPositionTopLeft, boundPositionBottomRight);
-
-        var drawingArgs = new ViewportUIDrawArgs(_buffer, _contentSize, boundSize, drawBoxScale, handle);
+        var drawingArgs = new ViewportUIDrawArgs(_buffer, _contentSize, drawBounds.Value.DrawBox, drawBounds.Value.Scale, viewport, handle);
         _vpUIManager.Draw(drawingArgs);
 
-        handle.DrawTextureRect(_buffer.Texture, boundSize);
+        handle.DrawTextureRect(_buffer.Texture, drawBounds.Value.DrawBox);
     }
 }

@@ -8,8 +8,8 @@ public class HUDControl : IDisposable
 {
     public readonly List<HUDControl> OrderedChildren = new();
 
-    public Vector2i Position { get; set; }
-    public Vector2i Size { get; set; }
+    public Vector2i Position { get; set; } = Vector2i.Zero;
+    public Vector2i Size { get; set; } = Vector2i.Zero;
 
     public event Action<HUDControlChildMovedEventArgs>? OnChildMoved;
     public event Action<HUDControl>? OnChildAdded;

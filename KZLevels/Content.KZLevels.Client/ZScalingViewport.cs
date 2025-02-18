@@ -43,7 +43,8 @@ public sealed class ZScalingViewport : Control, IViewportControl
 
     // Drawing Shader
     public ShaderInstance? Shader;
-    //public ShaderInstance ZLayerShader;
+
+    public bool CanMouseClick = true;
 
     // Internal viewport creation is deferred.
     private IClydeViewport? _viewport;
@@ -150,6 +151,9 @@ public sealed class ZScalingViewport : Control, IViewportControl
     {
         base.KeyBindDown(args);
 
+        if (!CanMouseClick)
+            return;
+
         if (args.Handled)
             return;
 
@@ -159,6 +163,9 @@ public sealed class ZScalingViewport : Control, IViewportControl
     protected override void KeyBindUp(GUIBoundKeyEventArgs args)
     {
         base.KeyBindUp(args);
+
+        if (!CanMouseClick)
+            return;
 
         if (args.Handled)
             return;
