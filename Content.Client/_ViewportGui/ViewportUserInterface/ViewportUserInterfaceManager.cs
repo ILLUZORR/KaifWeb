@@ -86,8 +86,6 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
     {
         var handle = args.ScreenHandle;
 
-        CheckWorldInteraction(args);
-
         args.ScreenHandle.RenderInRenderTarget(args.RenderTexture, () =>
         {
             Root?.Draw(args);
@@ -121,10 +119,16 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
 
     private void OnKeyBindDown(GUIBoundKeyEventArgs args)
     {
+        // TODO: Add whitelist for some conroles, like MoveUp, MoveDown, MoveRight
+        if (DoInteraction())
+            args.Handle();
     }
 
     private void OnKeyBindUp(GUIBoundKeyEventArgs args)
     {
+        // TODO: Add whitelist for some conroles, like MoveUp, MoveDown, MoveRight
+        if (DoInteraction())
+            args.Handle();
     }
 
     private void ResolveKeyBinds()
@@ -136,14 +140,43 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
         _viewport.OnKeyBindUp += OnKeyBindUp;
     }
 
-    private void CheckWorldInteraction(ViewportUIDrawArgs args)
+    private bool DoInteraction()
     {
         if (Root is null)
-            return;
+            return false;
 
         var mouseScreenPos = _inputManager.MouseScreenPosition;
-        // TODO: FUCK NO!!! Firstly we need translate mouseScreenPosition to local viewport's ContentSize
-        CanMouseInteractInWorld = !DoCheckControlsBounds(Root, new Vector2i((int) mouseScreenPos.X, (int) mouseScreenPos.Y));
+        var localMousePos = ConvertGlobalToLocal(mouseScreenPos);
+        if (localMousePos is null)
+            return false;
+
+        var result = DoCheckControlsBounds(Root, (Vector2i) localMousePos);
+        CanMouseInteractInWorld = !result;
+
+        return result;
+    }
+
+    private Vector2i? ConvertGlobalToLocal(ScreenCoordinates mousePos)
+    {
+        var drawBounds = GetDrawingBounds();
+        if (drawBounds is null)
+            return null;
+        if (DrawingInfo is null)
+            return null;
+
+        var scaleX = drawBounds.Value.DrawBox.Width / DrawingInfo.Value.ContentSize.X;
+        var scaleY = drawBounds.Value.DrawBox.Height / DrawingInfo.Value.ContentSize.Y;
+
+        var localMousePosX = mousePos.X - drawBounds.Value.DrawBox.Left;
+        var localMousePosY = mousePos.Y - drawBounds.Value.DrawBox.Bottom;
+
+        var vpMouseX = localMousePosX / scaleX;
+        var vpMouseY = localMousePosY / scaleY;
+
+        // Because minus
+        vpMouseY = vpMouseY * (-1);
+
+        return new Vector2i((int) vpMouseX, (int) vpMouseY);
     }
 
     private bool DoCheckControlsBounds(HUDControl uicontrol, Vector2i mousePos)
