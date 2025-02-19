@@ -8,7 +8,11 @@ namespace Content.Client._ViewportGui.ViewportUserInterface.UI;
 /// </summary>
 public class HUDTextureRect : HUDControl
 {
+    /// <summary>
+    /// Drawing texture. For setting size or position use <seealso cref="HUDTextureRect"/>'s Size and Position variables.
+    /// </summary>
     public Texture? Texture { get; set; }
+
     public override void Draw(in ViewportUIDrawArgs args)
     {
         var handle = args.ScreenHandle;
@@ -20,7 +24,7 @@ public class HUDTextureRect : HUDControl
             return;
         }
 
-        handle.DrawTextureRect(Texture, new UIBox2(Position, Size));
+        handle.DrawTextureRect(Texture, new UIBox2(Position, Position + Size));
 
         base.Draw(args);
     }

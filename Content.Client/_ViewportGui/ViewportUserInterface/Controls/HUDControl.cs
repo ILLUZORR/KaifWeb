@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using Robust.Client.UserInterface;
 using Robust.Shared.Timing;
 
 namespace Content.Client._ViewportGui.ViewportUserInterface.UI;
@@ -14,6 +15,9 @@ public class HUDControl : IDisposable
     public event Action<HUDControlChildMovedEventArgs>? OnChildMoved;
     public event Action<HUDControl>? OnChildAdded;
     public event Action<HUDControl>? OnChildRemoved;
+
+    public event Action<GUIBoundKeyEventArgs>? OnKeyBindDown;
+    public event Action<GUIBoundKeyEventArgs>? OnKeyBindUp;
 
     public HUDControl? Parent { get; private set; }
     public HUDOrderedChildCollection Children { get; }
@@ -116,6 +120,16 @@ public class HUDControl : IDisposable
         OnChildAdded?.Invoke(newChild);
     }
 
+    public virtual void KeyBindDown(GUIBoundKeyEventArgs args)
+    {
+        OnKeyBindDown?.Invoke(args);
+    }
+
+    public virtual void KeyBindUp(GUIBoundKeyEventArgs args)
+    {
+        OnKeyBindUp?.Invoke(args);
+    }
+
     public void DisposeAllChildren()
     {
         // Cache because the children modify the dictionary.
@@ -151,8 +165,15 @@ public class HUDControl : IDisposable
     /// </summary>
     public virtual void FrameUpdate(FrameEventArgs args)
     {
+        foreach (var child in Children.ToArray())
+        {
+            child.FrameUpdate(args);
+        }
     }
 
+    /// <summary>
+    ///     This is called when we need draw the element.
+    /// </summary>
     public virtual void Draw(in ViewportUIDrawArgs args)
     {
         foreach (var child in Children.ToArray())
@@ -169,6 +190,11 @@ public class HUDControl : IDisposable
 public enum HUDMouseFilterMode : byte
 {
     /// <summary>
+    ///     The control will not be considered at all, and will not have any effects.
+    /// </summary>
+    Ignore = 0,
+
+    /// <summary>
     ///     The control will be able to receive mouse buttons events.
     ///     Furthermore, if a control with this mode does get clicked,
     ///     the event automatically gets marked as handled after every other candidate has been tried,
@@ -180,12 +206,7 @@ public enum HUDMouseFilterMode : byte
     ///     The control will be able to receive mouse button events like <see cref="Pass" />,
     ///     but the event will be stopped and handled even if the relevant events do not handle it.
     /// </summary>
-    Stop = 0,
-
-    /// <summary>
-    ///     The control will not be considered at all, and will not have any effects.
-    /// </summary>
-    Ignore = 2,
+    Stop = 2,
 }
 
 public sealed class HUDOrderedChildCollection : ICollection<HUDControl>, IReadOnlyCollection<HUDControl>
