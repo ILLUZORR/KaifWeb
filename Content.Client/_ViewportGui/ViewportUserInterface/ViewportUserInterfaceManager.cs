@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Numerics;
 using Content.Client._ViewportGui.ViewportUserInterface.UI;
 using Content.Client.Resources;
@@ -28,7 +29,7 @@ public interface IViewportUserInterfaceManager
     /// <summary>
     /// Contains all HUD elements near viewport. And should do only that.
     /// </summary>
-    HUDRoot? Root { get; }
+    HUDRoot Root { get; }
 
     /// <summary>
     /// Can we interact with world objects on screen position.
@@ -41,11 +42,15 @@ public interface IViewportUserInterfaceManager
     void Draw(ViewportUIDrawArgs args);
 
     ViewportDrawBounds? GetDrawingBounds();
+    Texture? GetTexturePath(string path);
+    Texture? GetTexturePath(ResPath path);
+    bool TryGetControl<T>(string controlName, out T? control) where T : HUDControl;
+    bool TryGetControl<T>(out T? control) where T : HUDControl;
 }
 
 /// <summary>
 /// Used for manage viewport HUD interface.
-/// TODO: Need add click and hover supporting, like UIManager.
+/// TODO: Need add hover supporting, like UIManager.
 /// </summary>
 public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
 {
@@ -66,15 +71,14 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
         }
     }
 
-    public HUDRoot? Root { get; private set; }
+    public HUDRoot Root { get; private set; } = new HUDRoot();
 
     public bool CanMouseInteractInWorld { get; private set; } = true;
 
     public void Initialize()
     {
-        Root = new HUDRoot();
         CanMouseInteractInWorld = true;
-
+        /*
         // Testing
         var textRect = new HUDTextureRect();
         Root.AddChild(textRect);
@@ -92,13 +96,14 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
         var textRect2 = new HUDAnimatedTextureRect();
         Root.AddChild(textRect2);
         textRect2.Size = (32, 32);
-        textRect2.Position = (0, 0);
+        textRect2.Position = (32, 0);
         textRect2.SetFromSpriteSpecifier(sprite);
+        */
     }
 
     public void FrameUpdate(FrameEventArgs args)
     {
-        Root?.FrameUpdate(args);
+        Root.FrameUpdate(args);
     }
 
     public void Draw(ViewportUIDrawArgs args)
@@ -107,7 +112,7 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
 
         args.ScreenHandle.RenderInRenderTarget(args.RenderTexture, () =>
         {
-            Root?.Draw(args);
+            Root.Draw(args);
 
             // Debug bounds drawing
             //handle.DrawRect(new UIBox2(new Vector2(0, 0), args.ContentSize), Color.Green.WithAlpha(0.5f), true);
@@ -134,6 +139,28 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
         var boundsSize = new UIBox2(boundPositionTopLeft, boundPositionBottomRight);
 
         return new ViewportDrawBounds(boundsSize, drawBoxScale);
+    }
+
+    public Texture? GetTexturePath(string path)
+    {
+        return _resourceCache.GetTexture(path);
+    }
+
+    public Texture? GetTexturePath(ResPath path)
+    {
+        return _resourceCache.GetTexture(path);
+    }
+
+    public bool TryGetControl<T>(string controlName, out T? control) where T : HUDControl
+    {
+        control = Root.Children.OfType<T>().FirstOrDefault(c => c.Name == controlName);
+        return control != null;
+    }
+
+    public bool TryGetControl<T>(out T? control) where T : HUDControl
+    {
+        control = Root.Children.OfType<T>().FirstOrDefault();
+        return control != null;
     }
 
     private void OnKeyBindDown(GUIBoundKeyEventArgs args)

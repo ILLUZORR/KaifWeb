@@ -16,16 +16,14 @@ public class HUDTextureRect : HUDControl
     public override void Draw(in ViewportUIDrawArgs args)
     {
         var handle = args.ScreenHandle;
-        var contentSize = args.ContentSize;
 
-        if (Texture is null)
+        if (Texture is null || !VisibleInTree)
         {
             base.Draw(args);
             return;
         }
 
-        handle.DrawTextureRect(Texture, new UIBox2(Position, Position + Size));
-
+        handle.DrawTextureRect(Texture, new UIBox2(GlobalPosition, GlobalPosition + Size));
         base.Draw(args);
     }
 }

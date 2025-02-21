@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Numerics;
+using Content.Client._ViewportGui.ViewportUserInterface;
+using Content.Client._ViewportGui.ViewportUserInterface.UI;
 using Content.Client.Gameplay;
 using Content.Client.Hands.Systems;
 using Content.Client.Inventory;
@@ -30,10 +32,18 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
     IOnSystemChanged<ClientInventorySystem>, IOnSystemChanged<HandsSystem>
 {
     [Dependency] private readonly IEntityManager _entities = default!;
+    [Dependency] private readonly IViewportUserInterfaceManager _vpUIManager = default!; // VPGui edit
 
     [UISystemDependency] private readonly ClientInventorySystem _inventorySystem = default!;
     [UISystemDependency] private readonly HandsSystem _handsSystem = default!;
     [UISystemDependency] private readonly ContainerSystem _container = default!;
+
+    // VPGui edit
+    /// <summary>
+    /// Should be used to attach all left content to the... Left.
+    /// </summary>
+    public HUDTextureRect? InventoryPanel;
+    // VPGui edit end
 
     private EntityUid? _playerUid;
     private InventorySlotsComponent? _playerInventory;
@@ -48,6 +58,17 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
     public override void Initialize()
     {
         base.Initialize();
+
+        // VPGui edit
+        InventoryPanel = new HUDInventoryPanel();
+        InventoryPanel.Name = "InventoryPanel";
+        InventoryPanel.Texture = _vpUIManager.GetTexturePath("/Textures/Interface/LoraAshen/left_panel_background_full.png");
+        if (InventoryPanel.Texture is not null)
+            InventoryPanel.Size = (InventoryPanel.Texture.Size.X, InventoryPanel.Texture.Size.Y);
+        InventoryPanel.Position = (0, 0); // Is it important? :/
+
+        _vpUIManager.Root.AddChild(InventoryPanel);
+        // VPGui edit end
 
         var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
         gameplayStateLoad.OnScreenLoad += OnScreenLoad;

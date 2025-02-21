@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace Content.Client._ViewportGui.ViewportUserInterface.UI;
 
 /// <summary>

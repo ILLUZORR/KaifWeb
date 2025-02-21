@@ -7,10 +7,89 @@ namespace Content.Client._ViewportGui.ViewportUserInterface.UI;
 
 public class HUDControl : IDisposable
 {
+    private Vector2i _globalPosition = Vector2i.Zero;
+    private Vector2i _position = Vector2i.Zero;
+    private Vector2i _size = Vector2i.Zero;
+
+    private bool _visible = true;
+
+    /// <summary>
+    /// Do not use it! It works like Control._orderedChildren. It is public, because there is some CSharp's limits.
+    /// </summary>
     public readonly List<HUDControl> OrderedChildren = new();
 
-    public Vector2i Position { get; set; } = Vector2i.Zero;
-    public Vector2i Size { get; set; } = Vector2i.Zero;
+    /// <summary>
+    /// Global position in Viewport's UI.
+    /// </summary>
+    public Vector2i GlobalPosition
+    {
+        get => _globalPosition;
+        internal set
+        {
+            _globalPosition = value;
+        }
+    }
+
+    /// <summary>
+    /// Local position in his parent's position.
+    /// </summary>
+    public Vector2i Position
+    {
+        get => _position;
+        set
+        {
+            _position = value;
+            ValidateGlobalPosition();
+        }
+    }
+
+    /// <summary>
+    /// Control size.
+    /// </summary>
+    public Vector2i Size
+    {
+        get => _size;
+        set
+        {
+            _size = value;
+        }
+    }
+
+    /// <summary>
+    /// Set visibility of control. Might be useful, if you don't wanna recreate element each time.
+    /// </summary>
+    public bool Visible
+    {
+        get => _visible;
+        set
+        {
+            _visible = value;
+        }
+    }
+
+    /// <summary>
+    /// Check, if control can be visible in the tree.
+    /// </summary>
+    public bool VisibleInTree
+    {
+        get
+        {
+            for (var parent = this; parent != null; parent = parent.Parent)
+            {
+                if (!parent.Visible)
+                {
+                    return false;
+                }
+
+                if (parent is HUDRoot)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
 
     public event Action<HUDControlChildMovedEventArgs>? OnChildMoved;
     public event Action<HUDControl>? OnChildAdded;
@@ -149,6 +228,19 @@ public class HUDControl : IDisposable
             // but I'd probably still end up with this fix.
             if (child.Parent == this)
                 RemoveChild(child);
+        }
+    }
+
+    public void ValidateGlobalPosition()
+    {
+        if (Parent is null)
+            GlobalPosition = _position;
+        else
+            GlobalPosition = Parent.GlobalPosition + _position;
+
+        foreach (var child in Children.ToArray())
+        {
+            child.ValidateGlobalPosition();
         }
     }
 
