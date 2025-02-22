@@ -225,6 +225,8 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
 
         // Because minus
         vpMouseY = vpMouseY * (-1);
+        // Because mouse think - bottom is start, not top
+        vpMouseY = DrawingInfo.Value.ContentSize.Y - vpMouseY;
 
         return new Vector2i((int) vpMouseX, (int) vpMouseY);
     }
@@ -240,7 +242,7 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
     {
         var inBounds = false;
 
-        if (InControlBounds(uicontrol.Position, uicontrol.Size, mousePos))
+        if (InControlBounds(uicontrol.GlobalPosition, uicontrol.Size, mousePos))
         {
             if (uicontrol.MouseFilter >= HUDMouseFilterMode.Pass)
             {

@@ -42,7 +42,7 @@ public sealed class AlertsUIController : UIController, IOnStateEntered<GameplayS
         AlertsPanel.Texture = _vpUIManager.GetTexturePath("/Textures/Interface/LoraAshen/right_panel_background_full.png");
         if (AlertsPanel.Texture is not null)
             AlertsPanel.Size = (AlertsPanel.Texture.Size.X, AlertsPanel.Texture.Size.Y);
-        AlertsPanel.Position = (32 * (15 + 4) - 32, 0); // Is it important? :/
+        AlertsPanel.Position = (32 * (15 + 1) - 32, 0); // fucking calculus
 
         _vpUIManager.Root.AddChild(AlertsPanel);
         // VPGui edit end

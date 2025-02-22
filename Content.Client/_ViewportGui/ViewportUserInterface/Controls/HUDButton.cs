@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Shared.Input;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Shared.Input;
@@ -24,8 +25,10 @@ public class HUDButton : HUDControl
     {
         base.KeyBindDown(args);
 
+        // TODO: By some reasons UIClick doesn't work with viewport
         if (ButtonClickType == HUDButtonClickType.OnDown &&
             (args.Function == EngineKeyFunctions.UIClick ||
+            args.Function == ContentKeyFunctions.MoveStoredItem || // Idk how to deal with UIClick :/
             args.Function == EngineKeyFunctions.UIRightClick))
             OnPressed?.Invoke(args);
     }
@@ -34,8 +37,10 @@ public class HUDButton : HUDControl
     {
         base.KeyBindUp(args);
 
+        // TODO: By some reasons UIClick doesn't work with viewport
         if (ButtonClickType == HUDButtonClickType.OnUp &&
             (args.Function == EngineKeyFunctions.UIClick ||
+            args.Function == ContentKeyFunctions.MoveStoredItem || // Idk how to deal with UIClick :/
             args.Function == EngineKeyFunctions.UIRightClick))
             OnPressed?.Invoke(args);
     }

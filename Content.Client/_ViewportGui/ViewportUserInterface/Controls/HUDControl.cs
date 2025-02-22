@@ -162,6 +162,8 @@ public class HUDControl : IDisposable
 
         child.Parent = this;
         OrderedChildren.Add(child);
+        // Update GlobalPosition for childs
+        child.ValidateGlobalPosition();
 
         ChildAdded(child);
     }
@@ -201,12 +203,14 @@ public class HUDControl : IDisposable
 
     public virtual void KeyBindDown(GUIBoundKeyEventArgs args)
     {
-        OnKeyBindDown?.Invoke(args);
+        if (VisibleInTree)
+            OnKeyBindDown?.Invoke(args);
     }
 
     public virtual void KeyBindUp(GUIBoundKeyEventArgs args)
     {
-        OnKeyBindUp?.Invoke(args);
+        if (VisibleInTree)
+            OnKeyBindUp?.Invoke(args);
     }
 
     public void DisposeAllChildren()
