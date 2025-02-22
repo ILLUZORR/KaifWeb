@@ -82,6 +82,20 @@ public sealed partial class AlertPrototype : IPrototype
     [DataField(serverOnly: true)]
     public IAlertClick? OnClick { get; private set; }
 
+    // VPGui edit
+    [DataField]
+    public int HudPositionX { get; set; } = -32;
+
+    [DataField]
+    public int HudPositionY { get; set; } = -32;
+
+    /// <summary>
+    /// If true - all alerts should be placed into single control, what can switch icons every 3 seconds
+    /// </summary>
+    [DataField]
+    public bool IsGeneric { get; set; } = true;
+    // VPGui edit end
+
     /// <param name="severity">severity level, if supported by this alert</param>
     /// <returns>the icon path to the texture for the provided severity level</returns>
     public SpriteSpecifier GetIcon(short? severity = null)

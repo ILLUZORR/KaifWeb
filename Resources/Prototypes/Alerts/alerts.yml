@@ -56,6 +56,9 @@
     state: air
   name: alerts-airok-name
   description: alerts-airok-desc
+  hudPositionX: 0
+  hudPositionY: 192
+  isGeneric: false
 
 - type: alert
   id: LowOxygen
@@ -65,6 +68,9 @@
     state: not_enough_oxy
   name: alerts-low-oxygen-name
   description: alerts-low-oxygen-desc
+  hudPositionX: 0
+  hudPositionY: 192
+  isGeneric: false
 
 - type: alert
   id: LowNitrogen
@@ -74,6 +80,9 @@
       state: not_enough_nitro
   name: alerts-low-nitrogen-name
   description: alerts-low-nitrogen-desc
+  hudPositionX: 0
+  hudPositionY: 192
+  isGeneric: false
 
 - type: alert
   id: LowPlasma
@@ -83,6 +92,9 @@
       state: not_enough_tox
   name: alerts-low-plasma-name
   description: alerts-low-plasma-desc
+  hudPositionX: 0
+  hudPositionY: 192
+  isGeneric: false
 
 - type: alert
   id: HighOxygen
@@ -92,6 +104,9 @@
       state: too_much_oxy
   name: alerts-high-oxygen-name
   description: alerts-high-oxygen-desc
+  hudPositionX: 0
+  hudPositionY: 192
+  isGeneric: false
 
 - type: alert
   id: ToxinsOk
@@ -101,6 +116,9 @@
     state: tox
   name: alerts-toxok-name
   description: alerts-toxok-desc
+  hudPositionX: 0
+  hudPositionY: 240
+  isGeneric: false
 
 - type: alert
   id: Toxins
@@ -110,6 +128,9 @@
     state: too_much_tox
   name: alerts-high-toxin-name
   description: alerts-high-toxin-desc
+  hudPositionX: 0
+  hudPositionY: 240
+  isGeneric: false
 
 - type: alert
   id: GoodPressure
@@ -119,6 +140,9 @@
     state: good
   name: alerts-good-pressure-name
   description: alerts-good-pressure-desc
+  hudPositionX: 0
+  hudPositionY: 208
+  isGeneric: false
 
 - type: alert
   id: LowPressure
@@ -131,6 +155,9 @@
   maxSeverity: 2
   name: alerts-low-pressure-name
   description: alerts-low-pressure-desc
+  hudPositionX: 0
+  hudPositionY: 208
+  isGeneric: false
 
 - type: alert
   id: HighPressure
@@ -143,6 +170,9 @@
   maxSeverity: 2
   name: alerts-high-pressure-name
   description: alerts-high-pressure-desc
+  hudPositionX: 0
+  hudPositionY: 208
+  isGeneric: false
 
 # FINSTER EDIT
 #- type: alert
@@ -174,6 +204,9 @@
   maxSeverity: 3
   name: alerts-too-cold-name
   description: alerts-too-cold-desc
+  hudPositionX: 0
+  hudPositionY: 160
+  isGeneric: false
 
 - type: alert
   id: NormalTemperature
@@ -183,6 +216,9 @@
     state: normal
   name: alerts-normal-temperature-name
   description: alerts-normal-temperature-desc
+  hudPositionX: 0
+  hudPositionY: 160
+  isGeneric: false
 
 - type: alert
   id: Hot
@@ -197,6 +233,9 @@
   maxSeverity: 3
   name: alerts-too-hot-name
   description: alerts-too-hot-desc
+  hudPositionX: 0
+  hudPositionY: 160
+  isGeneric: false
 
 #- type: alert
 #  id: Weightless
@@ -246,6 +285,9 @@
     state: offer_item
   name: alerts-offer-name
   description: alerts-offer-desc
+  hudPositionX: -32
+  hudPositionY: 160
+  isGeneric: false
 
 - type: alert
   id: HumanCrit
@@ -255,6 +297,9 @@
     state: critical
   name: alerts-crit-name
   description: alerts-crit-desc
+  hudPositionX: 0
+  hudPositionY: 288
+  isGeneric: false
 
 - type: alert
   id: HumanDead
@@ -264,6 +309,9 @@
     state: dead
   name: alerts-dead-name
   description: alerts-dead-desc
+  hudPositionX: 0
+  hudPositionY: 288
+  isGeneric: false
 
 - type: alert
   id: HumanHealth
@@ -284,6 +332,9 @@
   description: alerts-health-desc
   minSeverity: 0
   maxSeverity: 4
+  hudPositionX: 0
+  hudPositionY: 288
+  isGeneric: false
 
 - type: alert
   id: BorgHealth
@@ -303,6 +354,9 @@
   description: alerts-health-desc
   minSeverity: 0
   maxSeverity: 4
+  hudPositionX: 0
+  hudPositionY: 288
+  isGeneric: false
 
 - type: alert
   id: BorgCrit
@@ -312,6 +366,9 @@
     state: critical
   name: alerts-crit-name
   description: alerts-crit-desc
+  hudPositionX: 0
+  hudPositionY: 288
+  isGeneric: false
 
 - type: alert
   id: BorgDead
@@ -321,6 +378,9 @@
     state: dead
   name: alerts-dead-name
   description: alerts-dead-desc
+  hudPositionX: 0
+  hudPositionY: 288
+  isGeneric: false
 
 - type: alert
   id: BorgBattery
@@ -352,6 +412,9 @@
   description: alerts-battery-desc
   minSeverity: 0
   maxSeverity: 10
+  hudPositionX: 0
+  hudPositionY: 384
+  isGeneric: false
 
 - type: alert
   id: BorgBatteryNone
@@ -361,6 +424,9 @@
     state: battery-none
   name: alerts-no-battery-name
   description: alerts-no-battery-desc
+  hudPositionX: 0
+  hudPositionY: 384
+  isGeneric: false
 
 - type: alert
   id: Internals
@@ -377,6 +443,9 @@
   description: alerts-internals-desc
   minSeverity: 0
   maxSeverity: 2
+  hudPositionX: 0
+  hudPositionY: 128
+  isGeneric: false
 
 - type: alert
   id: PilotingShuttle
@@ -385,6 +454,9 @@
   icons: [ /Textures/Interface/Alerts/piloting.png ]
   name: alerts-piloting-name
   description: alerts-piloting-desc
+  hudPositionX: -32
+  hudPositionY: 128
+  isGeneric: false
 
 - type: alert
   id: Peckish
@@ -443,6 +515,9 @@
   description: alerts-stamina-desc
   minSeverity: 0
   maxSeverity: 10
+  hudPositionX: 0
+  hudPositionY: 320
+  isGeneric: false
 
 - type: alert
   id: HungerDead
@@ -565,6 +640,9 @@
   description: alerts-pulling-desc
   minSeverity: 0
   maxSeverity: 4
+  hudPositionX: 0
+  hudPositionY: 448
+  isGeneric: false
 
 # FINSTER EDIT - Resist Alert
 - type: alert
@@ -576,6 +654,9 @@
     state: resist0
   name: alerts-resist-name
   description: alerts-resist-desc
+  hudPositionX: 0
+  hudPositionY: 432
+  isGeneric: false
 # FINSTER EDIT END
 
 #nigga uhboer and nigga lampinoid made it
@@ -609,6 +690,9 @@
   description: alerts-bleed-desc
   minSeverity: 0
   maxSeverity: 10
+  hudPositionX: 0
+  hudPositionY: 224
+  isGeneric: false
 
 - type: alert
   id: Pacified
@@ -631,6 +715,9 @@
   description: alerts-walking-desc
   minSeverity: 0
   maxSeverity: 1
+  hudPositionX: -32
+  hudPositionY: 448
+  isGeneric: false
 
 - type: alert
   id: CombatMode
@@ -645,6 +732,9 @@
   description: alerts-combatmode-desc
   minSeverity: 0
   maxSeverity: 1
+  hudPositionX: -64
+  hudPositionY: 448
+  isGeneric: false
 
 - type: alert
   id: Laying
@@ -659,6 +749,9 @@
   description: alerts-laying-desc
   minSeverity: 0
   maxSeverity: 1
+  hudPositionX: 0
+  hudPositionY: 352
+  isGeneric: false
 
 - type: alert
   id: Drop
@@ -673,6 +766,9 @@
   description: alerts-drop-desc
   minSeverity: 0
   maxSeverity: 1
+  hudPositionX: -128
+  hudPositionY: 448
+  isGeneric: false
 
 - type: alert
   id: Throw
@@ -687,6 +783,9 @@
   description: alerts-throw-desc
   minSeverity: 0
   maxSeverity: 1
+  hudPositionX: -128
+  hudPositionY: 464
+  isGeneric: false
 
 - type: alert
   id: IntentHelp
@@ -701,6 +800,9 @@
   description: alerts-intent-help-desc
   minSeverity: 0
   maxSeverity: 1
+  hudPositionX: -96
+  hudPositionY: 448
+  isGeneric: false
 
 - type: alert
   id: IntentDisarm
@@ -715,6 +817,9 @@
   description: alerts-intent-disarm-desc
   minSeverity: 0
   maxSeverity: 1
+  hudPositionX: -80
+  hudPositionY: 448
+  isGeneric: false
 
 - type: alert
   id: IntentGrab
@@ -729,6 +834,9 @@
   description: alerts-intent-grab-desc
   minSeverity: 0
   maxSeverity: 1
+  hudPositionX: -80
+  hudPositionY: 464
+  isGeneric: false
 
 - type: alert
   id: IntentHarm
@@ -743,6 +851,9 @@
   description: alerts-intent-harm-desc
   minSeverity: 0
   maxSeverity: 1
+  hudPositionX: -96
+  hudPositionY: 464
+  isGeneric: false
 
 - type: alert
   id: Debug1
@@ -802,6 +913,9 @@
       state: mood_insane
   name: alerts-mood-insane-name
   description: alerts-mood-insane-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: Horrible
@@ -812,6 +926,9 @@
       state: mood1
   name: alerts-mood-horrible-name
   description: alerts-mood-horrible-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: Terrible
@@ -822,6 +939,9 @@
       state: mood2
   name: alerts-mood-terrible-name
   description: alerts-mood-terrible-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: Bad
@@ -832,6 +952,9 @@
       state: mood3
   name: alerts-mood-bad-name
   description: alerts-mood-bad-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: Meh
@@ -842,6 +965,9 @@
       state: mood4
   name: alerts-mood-meh-name
   description: alerts-mood-meh-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: Neutral
@@ -852,6 +978,9 @@
       state: mood5
   name: alerts-mood-neutral-name
   description: alerts-mood-neutral-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: Good
@@ -862,6 +991,9 @@
       state: mood6
   name: alerts-mood-good-name
   description: alerts-mood-good-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: Great
@@ -872,6 +1004,9 @@
       state: mood7
   name: alerts-mood-great-name
   description: alerts-mood-great-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: Exceptional
@@ -882,6 +1017,9 @@
       state: mood8
   name: alerts-mood-exceptional-name
   description: alerts-mood-exceptional-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: Perfect
@@ -892,6 +1030,9 @@
       state: mood9
   name: alerts-mood-perfect-name
   description: alerts-mood-perfect-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: MoodDead
@@ -902,6 +1043,9 @@
       state: mood_happiness_bad
   name: alerts-mood-dead-name
   description: alerts-mood-dead-desc
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
 
 - type: alert
   id: Deflecting

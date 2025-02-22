@@ -329,7 +329,7 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
 
         if (InControlBounds(uicontrol.GlobalPosition, uicontrol.Size, mousePos))
         {
-            if (uicontrol.MouseFilter >= HUDMouseFilterMode.Pass)
+            if (uicontrol.MouseFilter >= HUDMouseFilterMode.Pass && uicontrol.VisibleInTree)
             {
                 if (keyBindInfo.KeyBindType == HUDKeyBindType.Down)
                     uicontrol.KeyBindDown(keyBindInfo.KeyEventArgs);
