@@ -3,10 +3,14 @@ using System.Numerics;
 using Content.Client._ViewportGui.ViewportUserInterface.UI;
 using Content.Client.Resources;
 using Content.KayMisaZlevels.Client;
+using Content.Shared.CCVar;
+using Robust.Client.Audio;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
+using Robust.Shared.Audio.Sources;
+using Robust.Shared.Configuration;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -46,6 +50,16 @@ public interface IViewportUserInterfaceManager
     Texture? GetTexturePath(ResPath path);
     bool TryGetControl<T>(string controlName, out T? control) where T : HUDControl;
     bool TryGetControl<T>(out T? control) where T : HUDControl;
+
+    /// <summary>
+    /// Play UI click sound for buttons, like <seealso cref="IUserInterfaceManager"/>
+    /// </summary>
+    void PlayClickSound();
+
+    /// <summary>
+    /// Play UI hover sound for buttons, like <seealso cref="IUserInterfaceManager"/>
+    /// </summary>
+    void PlayHoverSound();
 }
 
 /// <summary>
@@ -56,6 +70,14 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
 {
     [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly IResourceCache _resourceCache = default!;
+    [Dependency] private readonly IAudioManager _audioManager = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
+
+    private IAudioSource? _clickSoundSource;
+    private IAudioSource? _hoverSoundSource;
+
+    private float _interfaceGain;
+    private const float ClickGain = 0.25f;
 
     private ZScalingViewport? _viewport;
 
@@ -78,6 +100,10 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
     public void Initialize()
     {
         CanMouseInteractInWorld = true;
+
+        _cfg.OnValueChanged(CCVars.InterfaceVolume, SetInterfaceVolume, true);
+        SetClickSounds(_cfg.GetCVar(CCVars.UIClickSound), _cfg.GetCVar(CCVars.UIHoverSound));
+
         /*
         // Testing
         var textRect = new HUDTextureRect();
@@ -161,6 +187,65 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
     {
         control = Root.Children.OfType<T>().FirstOrDefault();
         return control != null;
+    }
+
+    private void SetInterfaceVolume(float obj)
+    {
+        _interfaceGain = obj;
+
+        if (_clickSoundSource != null)
+        {
+            _clickSoundSource.Gain = ClickGain * _interfaceGain;
+        }
+
+        if (_hoverSoundSource != null)
+        {
+            _hoverSoundSource.Gain = ClickGain * _interfaceGain;
+        }
+    }
+
+    private void SetClickSounds(string clickSoundFile, string hoverSoundFile)
+    {
+        if (!string.IsNullOrEmpty(clickSoundFile) &&
+            !string.IsNullOrEmpty(hoverSoundFile))
+        {
+            var resourceCombatOn = _resourceCache.GetResource<AudioResource>(clickSoundFile);
+            var resourceCombatOff = _resourceCache.GetResource<AudioResource>(hoverSoundFile);
+
+            var sourceCombatOn =
+                _audioManager.CreateAudioSource(resourceCombatOn);
+            var sourceCombatOff =
+                _audioManager.CreateAudioSource(resourceCombatOff);
+
+            if (sourceCombatOn != null)
+            {
+                sourceCombatOn.Gain = ClickGain * _interfaceGain;
+                sourceCombatOn.Global = true;
+            }
+            if (sourceCombatOff != null)
+            {
+                sourceCombatOff.Gain = ClickGain * _interfaceGain;
+                sourceCombatOff.Global = true;
+            }
+
+            _clickSoundSource = sourceCombatOn;
+            _hoverSoundSource = sourceCombatOff;
+        }
+        else
+        {
+            _clickSoundSource = null;
+            _hoverSoundSource = null;
+        }
+    }
+
+    public void PlayClickSound()
+    {
+        _clickSoundSource?.Restart();
+    }
+
+    public void PlayHoverSound()
+    {
+        _hoverSoundSource?.Restart();
     }
 
     private void OnKeyBindDown(GUIBoundKeyEventArgs args)

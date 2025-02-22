@@ -11,12 +11,16 @@ namespace Content.Client._ViewportGui.ViewportUserInterface.UI;
 /// </summary>
 public class HUDButton : HUDControl
 {
+    [Dependency] private readonly IViewportUserInterfaceManager _vpUIManager = default!;
+
     public HUDButtonClickType ButtonClickType { get; set; } = HUDButtonClickType.OnUp;
 
     public event Action<GUIBoundKeyEventArgs>? OnPressed;
 
     public HUDButton()
     {
+        IoCManager.InjectDependencies(this);
+
         // Idk how to set it by default for buttons
         MouseFilter = HUDMouseFilterMode.Stop;
     }
@@ -25,24 +29,32 @@ public class HUDButton : HUDControl
     {
         base.KeyBindDown(args);
 
-        // TODO: By some reasons UIClick doesn't work with viewport
-        if (ButtonClickType == HUDButtonClickType.OnDown &&
-            (args.Function == EngineKeyFunctions.UIClick ||
-            args.Function == ContentKeyFunctions.MoveStoredItem || // Idk how to deal with UIClick :/
-            args.Function == EngineKeyFunctions.UIRightClick))
-            OnPressed?.Invoke(args);
+        if (!VisibleInTree)
+            return;
+
+        TryPressButton(args, HUDButtonClickType.OnDown);
     }
 
     public override void KeyBindUp(GUIBoundKeyEventArgs args)
     {
         base.KeyBindUp(args);
 
-        // TODO: By some reasons UIClick doesn't work with viewport
-        if (ButtonClickType == HUDButtonClickType.OnUp &&
+        if (!VisibleInTree)
+            return;
+
+        TryPressButton(args, HUDButtonClickType.OnUp);
+    }
+
+    private void TryPressButton(GUIBoundKeyEventArgs args, HUDButtonClickType clickType)
+    {
+        if (ButtonClickType == clickType &&
             (args.Function == EngineKeyFunctions.UIClick ||
-            args.Function == ContentKeyFunctions.MoveStoredItem || // Idk how to deal with UIClick :/
+            args.Function == ContentKeyFunctions.MoveStoredItem || // TODO: By some reasons UIClick doesn't work with viewport
             args.Function == EngineKeyFunctions.UIRightClick))
+        {
+            _vpUIManager.PlayClickSound();
             OnPressed?.Invoke(args);
+        }
     }
 }
 
