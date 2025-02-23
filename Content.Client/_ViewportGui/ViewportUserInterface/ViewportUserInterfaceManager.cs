@@ -4,6 +4,7 @@ using Content.Client._ViewportGui.ViewportUserInterface.UI;
 using Content.Client.Resources;
 using Content.KayMisaZlevels.Client;
 using Content.Shared.CCVar;
+using Content.Shared.Input;
 using Robust.Client.Audio;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
@@ -81,10 +82,20 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
         EngineKeyFunctions.MoveRight,
         EngineKeyFunctions.MoveDown,
         EngineKeyFunctions.MoveLeft,
+        EngineKeyFunctions.Walk,
+
+        // Camera?
+        EngineKeyFunctions.CameraReset,
+        EngineKeyFunctions.CameraRotateLeft,
+        EngineKeyFunctions.CameraRotateRight,
 
         // Debug info
         EngineKeyFunctions.ShowDebugConsole,
         EngineKeyFunctions.ShowDebugMonitors,
+
+        // EE Based keys
+        ContentKeyFunctions.LookUp,
+        ContentKeyFunctions.ToggleStanding,
     };
 
     private IAudioSource? _clickSoundSource;
@@ -117,28 +128,6 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
 
         _cfg.OnValueChanged(CCVars.InterfaceVolume, SetInterfaceVolume, true);
         SetClickSounds(_cfg.GetCVar(CCVars.UIClickSound), _cfg.GetCVar(CCVars.UIHoverSound));
-
-        /*
-        // Testing
-        var textRect = new HUDTextureRect();
-        Root.AddChild(textRect);
-        textRect.Size = (96, 480);
-        textRect.Position = (0, 0);
-        textRect.Texture = _resourceCache.GetTexture("/Textures/Interface/LoraAshen/left_panel_background_full.png");
-        textRect.MouseFilter = HUDMouseFilterMode.Stop;
-        textRect.OnKeyBindDown += (args) =>
-        {
-            Logger.Debug("Pressed text rect");
-        };
-
-        var sprite = new SpriteSpecifier.Rsi(new ResPath("Interface/Alerts/human_alive.rsi"), "health3");
-
-        var textRect2 = new HUDAnimatedTextureRect();
-        Root.AddChild(textRect2);
-        textRect2.Size = (32, 32);
-        textRect2.Position = (32, 0);
-        textRect2.SetFromSpriteSpecifier(sprite);
-        */
     }
 
     public void FrameUpdate(FrameEventArgs args)
@@ -223,27 +212,27 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
         if (!string.IsNullOrEmpty(clickSoundFile) &&
             !string.IsNullOrEmpty(hoverSoundFile))
         {
-            var resourceCombatOn = _resourceCache.GetResource<AudioResource>(clickSoundFile);
-            var resourceCombatOff = _resourceCache.GetResource<AudioResource>(hoverSoundFile);
+            var resourceClickSound = _resourceCache.GetResource<AudioResource>(clickSoundFile);
+            var resourceHoverSound = _resourceCache.GetResource<AudioResource>(hoverSoundFile);
 
-            var sourceCombatOn =
-                _audioManager.CreateAudioSource(resourceCombatOn);
-            var sourceCombatOff =
-                _audioManager.CreateAudioSource(resourceCombatOff);
+            var sourceClickSound =
+                _audioManager.CreateAudioSource(resourceClickSound);
+            var sourceHoverSound =
+                _audioManager.CreateAudioSource(resourceHoverSound);
 
-            if (sourceCombatOn != null)
+            if (sourceClickSound != null)
             {
-                sourceCombatOn.Gain = ClickGain * _interfaceGain;
-                sourceCombatOn.Global = true;
+                sourceClickSound.Gain = ClickGain * _interfaceGain;
+                sourceClickSound.Global = true;
             }
-            if (sourceCombatOff != null)
+            if (sourceHoverSound != null)
             {
-                sourceCombatOff.Gain = ClickGain * _interfaceGain;
-                sourceCombatOff.Global = true;
+                sourceHoverSound.Gain = ClickGain * _interfaceGain;
+                sourceHoverSound.Global = true;
             }
 
-            _clickSoundSource = sourceCombatOn;
-            _hoverSoundSource = sourceCombatOff;
+            _clickSoundSource = sourceClickSound;
+            _hoverSoundSource = sourceHoverSound;
         }
         else
         {
