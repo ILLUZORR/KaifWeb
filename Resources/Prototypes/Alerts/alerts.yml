@@ -116,9 +116,9 @@
     state: tox
   name: alerts-toxok-name
   description: alerts-toxok-desc
-  hudPositionX: 0
-  hudPositionY: 240
-  isGeneric: false
+  #hudPositionX: 0
+  #hudPositionY: 240
+  #isGeneric: false
 
 - type: alert
   id: Toxins
@@ -128,9 +128,9 @@
     state: too_much_tox
   name: alerts-high-toxin-name
   description: alerts-high-toxin-desc
-  hudPositionX: 0
-  hudPositionY: 240
-  isGeneric: false
+  #hudPositionX: 0
+  #hudPositionY: 240
+  #isGeneric: false
 
 - type: alert
   id: GoodPressure
@@ -141,7 +141,7 @@
   name: alerts-good-pressure-name
   description: alerts-good-pressure-desc
   hudPositionX: 0
-  hudPositionY: 208
+  hudPositionY: 224
   isGeneric: false
 
 - type: alert
@@ -156,7 +156,7 @@
   name: alerts-low-pressure-name
   description: alerts-low-pressure-desc
   hudPositionX: 0
-  hudPositionY: 208
+  hudPositionY: 224
   isGeneric: false
 
 - type: alert
@@ -171,7 +171,7 @@
   name: alerts-high-pressure-name
   description: alerts-high-pressure-desc
   hudPositionX: 0
-  hudPositionY: 208
+  hudPositionY: 224
   isGeneric: false
 
 # FINSTER EDIT
@@ -690,9 +690,9 @@
   description: alerts-bleed-desc
   minSeverity: 0
   maxSeverity: 10
-  hudPositionX: 0
-  hudPositionY: 224
-  isGeneric: false
+  #hudPositionX: 0
+  #hudPositionY: 224
+  #isGeneric: false
 
 - type: alert
   id: Pacified

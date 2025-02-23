@@ -16,7 +16,15 @@ public class HUDAlertsPanel : HUDTextureRect
 
     public event EventHandler<ProtoId<AlertPrototype>>? AlertPressed;
 
+    /// <summary>
+    /// Contains all controls, what should be placed on specific screen position.
+    /// </summary>
     public HUDControl Container;
+
+    /// <summary>
+    /// Contains all generic or unnecessary alerts (like hunger, thrist, toxins, bleed, piloting...)
+    /// </summary>
+    public HUDGenericAlertsControl GenericContainer;
 
     public HUDAlertsPanel()
     {
@@ -24,6 +32,10 @@ public class HUDAlertsPanel : HUDTextureRect
 
         Container = new HUDControl();
         AddChild(Container);
+
+        GenericContainer = new HUDGenericAlertsControl();
+        GenericContainer.Position = (0, 96); // TODO: Should be configurated
+        AddChild(GenericContainer);
     }
 
     public void SyncControls(AlertsSystem alertsSystem,
@@ -78,8 +90,10 @@ public class HUDAlertsPanel : HUDTextureRect
     private HUDControl EnsureControlsContainer(AlertKey alertKey)
     {
         var alertControlsContainer = Container;
+        var alertType = alertKey.AlertType;
 
-        // TODO: Add generic icon. It should group all generic icons into one and swith them every 1 second
+        if (_prototypeManager.TryIndex<AlertPrototype>(alertType, out var alert) && alert.IsGeneric)
+            alertControlsContainer = (HUDControl) GenericContainer;
 
         return alertControlsContainer;
     }
