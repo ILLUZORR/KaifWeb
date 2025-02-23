@@ -15,7 +15,7 @@ public class HUDButton : HUDControl
 
     public HUDButtonClickType ButtonClickType { get; set; } = HUDButtonClickType.OnUp;
 
-    public event Action<GUIBoundKeyEventArgs>? OnPressed;
+    public event Action<HUDBoundKeyEventArgs>? OnPressed;
 
     public HUDButton()
     {
@@ -53,8 +53,29 @@ public class HUDButton : HUDControl
             args.Function == EngineKeyFunctions.UIRightClick))
         {
             _vpUIManager.PlayClickSound();
-            OnPressed?.Invoke(args);
+            OnPressed?.Invoke(new HUDBoundKeyEventArgs(args, this));
         }
+    }
+}
+
+public struct HUDBoundKeyEventArgs
+{
+    /// <summary>
+    /// Original BoundKeyEventArgs by engine UI. Maybe useful for coders.
+    /// </summary>
+    public GUIBoundKeyEventArgs GUIBoundKeyEventArgs { get; }
+
+    public BoundKeyFunction Function => GUIBoundKeyEventArgs.Function;
+
+    /// <summary>
+    /// Viewport's HUD button.
+    /// </summary>
+    public HUDButton Button { get; }
+
+    public HUDBoundKeyEventArgs(GUIBoundKeyEventArgs args, HUDButton button)
+    {
+        GUIBoundKeyEventArgs = args;
+        Button = button;
     }
 }
 

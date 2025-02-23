@@ -91,6 +91,8 @@ public class HUDControl : IDisposable
         }
     }
 
+    public bool Disposed { get; private set; }
+
     public event Action<HUDControlChildMovedEventArgs>? OnChildMoved;
     public event Action<HUDControl>? OnChildAdded;
     public event Action<HUDControl>? OnChildRemoved;
@@ -109,6 +111,7 @@ public class HUDControl : IDisposable
     public HUDControl()
     {
         Children = new HUDOrderedChildCollection(this);
+        Disposed = false;
     }
 
     public HUDControl GetChild(int index)
@@ -125,6 +128,72 @@ public class HUDControl : IDisposable
     {
     }
 
+    /// <summary>
+    ///     Sets the index of this control in the parent.
+    ///     This pretty much corresponds to layout and drawing order in relation to its siblings.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <exception cref="InvalidOperationException">This control has no parent.</exception>
+    public void SetPositionInParent(int position)
+    {
+        if (Parent == null)
+        {
+            throw new InvalidOperationException("No parent to change position in.");
+        }
+
+        var posInParent = GetPositionInParent();
+        if (posInParent == position)
+        {
+            return;
+        }
+
+        // If it was at the top index and we re-add it there then don't throw.
+        Parent.OrderedChildren.RemoveAt(posInParent);
+
+        if (position == Parent.OrderedChildren.Count)
+        {
+            Parent.OrderedChildren.Add(this);
+        }
+        else
+        {
+            Parent.OrderedChildren.Insert(position, this);
+        }
+
+        Parent.ChildMoved(this, posInParent, position);
+    }
+
+    /// <summary>
+    ///     Makes this the first control among its siblings,
+    ///     So that it's first in things such as drawing order.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">This control has no parent.</exception>
+    public void SetPositionFirst()
+    {
+        SetPositionInParent(0);
+    }
+
+    /// <summary>
+    ///     Makes this the last control among its siblings,
+    ///     So that it's last in things such as drawing order.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">This control has no parent.</exception>
+    public void SetPositionLast()
+    {
+        if (Parent == null)
+        {
+            throw new InvalidOperationException("No parent to change position in.");
+        }
+
+        SetPositionInParent(Parent.ChildCount - 1);
+    }
+
+    /// <summary>
+    ///     Gets the "index" in the parent.
+    ///     This index is used for ordering of actions like input and drawing among siblings.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    ///     Thrown if this control has no parent.
+    /// </exception>
     public int GetPositionInParent()
     {
         if (Parent == null)
@@ -278,8 +347,28 @@ public class HUDControl : IDisposable
         }
     }
 
-    public virtual void Dispose()
+    public void Dispose()
     {
+        if (Disposed)
+        {
+            return;
+        }
+
+        Dispose(true);
+        Disposed = true;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposing)
+        {
+            return;
+        }
+
+        DisposeAllChildren();
+        Orphan();
+
+        OnKeyBindDown = null;
     }
 }
 

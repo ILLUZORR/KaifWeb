@@ -23,8 +23,6 @@ public sealed partial class SeparatedChatGameScreen : InGameScreen
         SetAnchorAndMarginPreset(TopLeftContainer, LayoutPreset.TopLeft, margin: 10);
         SetAnchorAndMarginPreset(Ghost, LayoutPreset.BottomWide, margin: 80);
         SetAnchorAndMarginPreset(Hotbar, LayoutPreset.TopLeft, margin: 5);
-        SetAnchorAndMarginPreset(Alerts, LayoutPreset.Center, margin: 10);
-        SetAnchorAndMarginPreset(Targeting, LayoutPreset.TopLeft, margin: 5);
 
         Inventory.Margin = new Thickness(5f, 5f);
 
@@ -45,8 +43,6 @@ public sealed partial class SeparatedChatGameScreen : InGameScreen
     protected override void OnThemeUpdated()
     {
         MainInfoBackground.Texture = Theme.ResolveTexture("main_info_background");
-        RightPanelTopBackground.Texture = Theme.ResolveTexture("right_panel_top_slot");
         LeftPanel.Texture = Theme.ResolveTexture("left_panel_background");
-        RightPanel.Texture = Theme.ResolveTexture("right_panel_background");
     }
 }

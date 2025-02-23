@@ -13,6 +13,11 @@ public sealed class HUDAnimatedTextureRect : HUDTextureRect
     private int _curFrame;
     private float _curFrameTime;
 
+    /// <summary>
+    /// Should control autosized, when it apply sprite?
+    /// </summary>
+    public bool AutoSize { get; set; } = true;
+
     public RsiDirection RsiDirection { get; } = RsiDirection.South;
 
     public HUDAnimatedTextureRect()
@@ -26,6 +31,8 @@ public sealed class HUDAnimatedTextureRect : HUDTextureRect
         _state = specifier.RsiStateLike();
         _curFrameTime = _state.GetDelay(0);
         Texture = _state.GetFrame(RsiDirection, 0);
+        if (AutoSize)
+            Size = Texture.Size;
     }
 
     public override void FrameUpdate(FrameEventArgs args)

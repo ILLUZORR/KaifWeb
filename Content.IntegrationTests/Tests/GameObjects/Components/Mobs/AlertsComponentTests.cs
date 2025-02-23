@@ -1,6 +1,4 @@
 using System.Linq;
-using Content.Client.UserInterface.Systems.Alerts.Controls;
-using Content.Client.UserInterface.Systems.Alerts.Widgets;
 using Content.Shared.Alert;
 using Robust.Client.UserInterface;
 using Robust.Server.Player;
@@ -52,63 +50,12 @@ namespace Content.IntegrationTests.Tests.GameObjects.Components.Mobs
 
             await pair.RunTicksSync(5);
 
-            AlertsUI clientAlertsUI = default;
-            await client.WaitAssertion(() =>
-            {
-                var local = client.Session;
-                Assert.That(local, Is.Not.Null);
-                var controlled = local.AttachedEntity;
-#pragma warning disable NUnit2045 // Interdependent assertions.
-                Assert.That(controlled, Is.Not.Null);
-                // Making sure it exists
-                Assert.That(clientEntManager.HasComponent<AlertsComponent>(controlled.Value));
-#pragma warning restore Nunit2045
-
-                // find the alertsui
-
-                clientAlertsUI = FindAlertsUI(clientUIMgr.ActiveScreen);
-                Assert.That(clientAlertsUI, Is.Not.Null);
-
-                static AlertsUI FindAlertsUI(Control control)
-                {
-                    if (control is AlertsUI alertUI)
-                        return alertUI;
-                    foreach (var child in control.Children)
-                    {
-                        var found = FindAlertsUI(child);
-                        if (found != null)
-                            return found;
-                    }
-
-                    return null;
-                }
-
-                // This originally was hardcoded to expect a player character to have a Human Healthbar.
-                // It is no longer hardcoded to demand that.
-                // We should be seeing 2 alerts - the 2 debug alerts, in a specific order.
-                Assert.That(clientAlertsUI.AlertContainer.ChildCount, Is.GreaterThanOrEqualTo(2));
-                var alertControls = clientAlertsUI.AlertContainer.Children.Select(c => (AlertControl) c);
-                var alertIDs = alertControls.Select(ac => ac.Alert.ID).ToArray();
-                var expectedIDs = new[] { "Debug1", "Debug2" };
-                Assert.That(alertIDs, Is.SupersetOf(expectedIDs));
-            });
-
             await server.WaitAssertion(() =>
             {
                 alertsSystem.ClearAlert(playerUid, "Debug1");
             });
 
             await pair.RunTicksSync(5);
-
-            await client.WaitAssertion(() =>
-            {
-                // We should be seeing 1 alert now because one was cleared
-                Assert.That(clientAlertsUI.AlertContainer.ChildCount, Is.GreaterThanOrEqualTo(1));
-                var alertControls = clientAlertsUI.AlertContainer.Children.Select(c => (AlertControl) c);
-                var alertIDs = alertControls.Select(ac => ac.Alert.ID).ToArray();
-                var expectedIDs = new[] { "Debug2" };
-                Assert.That(alertIDs, Is.SupersetOf(expectedIDs));
-            });
 
             await pair.CleanReturnAsync();
         }

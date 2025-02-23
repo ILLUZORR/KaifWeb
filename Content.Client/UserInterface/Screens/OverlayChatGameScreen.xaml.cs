@@ -22,8 +22,6 @@ public sealed partial class OverlayChatGameScreen : InGameScreen
         SetAnchorAndMarginPreset(Inventory, LayoutPreset.BottomLeft, margin: 5);
         SetAnchorAndMarginPreset(Hotbar, LayoutPreset.BottomWide, margin: 5);
         SetAnchorAndMarginPreset(Chat, LayoutPreset.TopRight, margin: 10);
-        SetAnchorAndMarginPreset(Alerts, LayoutPreset.TopRight, margin: 10);
-        SetAnchorAndMarginPreset(Targeting, LayoutPreset.BottomRight, margin: 5); // Shitmed Change
 
         Chat.OnResized += ChatOnResized;
         Chat.OnChatResizeFinish += ChatOnResizeFinish;
@@ -48,7 +46,6 @@ public sealed partial class OverlayChatGameScreen : InGameScreen
     private void ChatOnResized()
     {
         var marginBottom = Chat.GetValue<float>(MarginBottomProperty);
-        SetMarginTop(Alerts, marginBottom);
     }
 
     public override ChatBox ChatBox => Chat;
@@ -58,6 +55,5 @@ public sealed partial class OverlayChatGameScreen : InGameScreen
     {
         SetMarginBottom(Chat, size.X);
         SetMarginLeft(Chat, size.Y);
-        SetMarginTop(Alerts, size.X);
     }
 }

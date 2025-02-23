@@ -11,6 +11,7 @@ using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Shared.Audio.Sources;
 using Robust.Shared.Configuration;
+using Robust.Shared.Input;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -72,6 +73,19 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
     [Dependency] private readonly IResourceCache _resourceCache = default!;
     [Dependency] private readonly IAudioManager _audioManager = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
+
+    private List<BoundKeyFunction> _whitelistBoundKeys = new()
+    {
+        // Character movement
+        EngineKeyFunctions.MoveUp,
+        EngineKeyFunctions.MoveRight,
+        EngineKeyFunctions.MoveDown,
+        EngineKeyFunctions.MoveLeft,
+
+        // Debug info
+        EngineKeyFunctions.ShowDebugConsole,
+        EngineKeyFunctions.ShowDebugMonitors,
+    };
 
     private IAudioSource? _clickSoundSource;
     private IAudioSource? _hoverSoundSource;
@@ -252,8 +266,7 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
     {
         var keyBindInfo = new HUDKeyBindInfo(HUDKeyBindType.Down, args);
 
-        // TODO: Add whitelist for some conroles, like MoveUp, MoveDown, MoveRight
-        if (DoInteraction(keyBindInfo))
+        if (DoInteraction(keyBindInfo) && !_whitelistBoundKeys.Contains(args.Function))
             args.Handle();
     }
 
@@ -261,8 +274,7 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
     {
         var keyBindInfo = new HUDKeyBindInfo(HUDKeyBindType.Up, args);
 
-        // TODO: Add whitelist for some conroles, like MoveUp, MoveDown, MoveRight
-        if (DoInteraction(keyBindInfo))
+        if (DoInteraction(keyBindInfo) && !_whitelistBoundKeys.Contains(args.Function))
             args.Handle();
     }
 
@@ -285,10 +297,11 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
         if (localMousePos is null)
             return false;
 
-        var result = DoControlsBounds(Root, keyBindInfo, (Vector2i) localMousePos);
+        var boundsArgs = new HUDBoundsCheckArgs();
+        var result = DoControlsBounds(Root, ref boundsArgs, keyBindInfo, (Vector2i) localMousePos);
         CanMouseInteractInWorld = !result;
 
-        return result;
+        return boundsArgs.InBounds;
     }
 
     private Vector2i? ConvertGlobalToLocal(ScreenCoordinates mousePos)
@@ -323,10 +336,8 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
     /// <param name="keyBindInfo"></param>
     /// <param name="mousePos"></param>
     /// <returns>Does mouse cursor is focused on control</returns>
-    private bool DoControlsBounds(HUDControl uicontrol, HUDKeyBindInfo keyBindInfo, Vector2i mousePos)
+    private bool DoControlsBounds(HUDControl uicontrol, ref HUDBoundsCheckArgs boundsArgs, HUDKeyBindInfo keyBindInfo, Vector2i mousePos)
     {
-        var inBounds = false;
-
         if (InControlBounds(uicontrol.GlobalPosition, uicontrol.Size, mousePos))
         {
             if (uicontrol.MouseFilter >= HUDMouseFilterMode.Pass && uicontrol.VisibleInTree)
@@ -336,22 +347,26 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
                 else if (keyBindInfo.KeyBindType == HUDKeyBindType.Up)
                     uicontrol.KeyBindUp(keyBindInfo.KeyEventArgs);
 
+                // На всякий
+                boundsArgs.InBounds = true;
+                boundsArgs.IsFocused = true;
+
                 // We founded control and don't wanna try press any elements. So, interupt and return True
                 if (uicontrol.MouseFilter == HUDMouseFilterMode.Stop)
                     return true;
             }
 
-            inBounds = true;
+            boundsArgs.InBounds = true;
         }
 
         // Recursive for childs elements. Do the same logic, until it will be interrupt by HUDMouseFilterMode.Stop
         foreach (var control in uicontrol.Children)
         {
-            if (DoControlsBounds(control, keyBindInfo, mousePos))
+            if (DoControlsBounds(control, ref boundsArgs, keyBindInfo, mousePos))
                 return true;
         }
 
-        return inBounds;
+        return boundsArgs.IsFocused;
     }
 
     private bool InControlBounds(Vector2i controlPos, Vector2i controlSize, Vector2i pos)
@@ -367,6 +382,16 @@ public enum HUDKeyBindType
 {
     Down = 0,
     Up = 1
+}
+
+public record struct HUDBoundsCheckArgs
+{
+    public HUDBoundsCheckArgs()
+    {
+    }
+
+    public bool InBounds { get; set; } = false;
+    public bool IsFocused { get; set; } = false;
 }
 
 public struct HUDKeyBindInfo
