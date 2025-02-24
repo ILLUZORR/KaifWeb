@@ -117,6 +117,15 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         return button;
     }
 
+    private HUDSlotButton CreateHandButton(SlotData data)
+    {
+        var button = new HUDSlotButton(data);
+        button.Pressed += HandPressed;
+        //button.Hover += SlotButtonHovered;
+
+        return button;
+    }
+
     // Neuron Activation
     public void OnSystemLoaded(ClientInventorySystem system)
     {
@@ -238,9 +247,9 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
     {
     }
 
-    //private HUDHandButton AddHand(string handName, HandLocation location)
-    //{
-    //}
+    private void AddHand(string handName, HandLocation location)
+    {
+    }
 
     private void RemoveHand(string handName)
     {

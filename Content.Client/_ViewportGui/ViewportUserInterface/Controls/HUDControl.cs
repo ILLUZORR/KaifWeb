@@ -39,6 +39,10 @@ public class HUDControl : IDisposable
         set
         {
             _position = value;
+
+            if (Parent is not null)
+                ChildPositionChanged(this);
+
             ValidateGlobalPosition();
         }
     }
@@ -304,6 +308,7 @@ public class HUDControl : IDisposable
         }
     }
 
+    // TODO: Move into one "Invalidate" or "Validate" method?
     public void ValidateGlobalPosition()
     {
         if (Parent is null)
@@ -315,6 +320,11 @@ public class HUDControl : IDisposable
         {
             child.ValidateGlobalPosition();
         }
+    }
+
+    // TODO: Move into one "Invalidate" or "Validate" method?
+    protected virtual void ChildPositionChanged(HUDControl child)
+    {
     }
 
     /// <summary>
