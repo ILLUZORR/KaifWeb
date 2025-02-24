@@ -38,13 +38,6 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
     [UISystemDependency] private readonly HandsSystem _handsSystem = default!;
     [UISystemDependency] private readonly ContainerSystem _container = default!;
 
-    // VPGui edit
-    /// <summary>
-    /// Should be used to attach all left content to the... Left.
-    /// </summary>
-    public HUDTextureRect? InventoryPanel;
-    // VPGui edit end
-
     private EntityUid? _playerUid;
     private InventorySlotsComponent? _playerInventory;
     private readonly Dictionary<string, ItemSlotButtonContainer> _slotGroups = new();
@@ -55,20 +48,22 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
 
     private SlotControl? _lastHovered;
 
+    // VPGui edit - because by phantom reasons, when we try to link addional event from another controller,
+    // it call function double, triple and etc.
+    // So, only way to keep original code and fix that shit - use events from controller directly.
+
+    public Action<SlotData>? EntitySlotUpdate = null;
+    public Action<SlotData>? OnSlotAdded = null;
+    public Action<SlotData>? OnSlotRemoved = null;
+    public Action<EntityUid, InventorySlotsComponent>? OnLinkInventorySlots = null;
+    public Action? OnUnlinkInventory = null;
+    public Action<SlotSpriteUpdate>? OnSpriteUpdate = null;
+
+    // VPGui edit end
+
     public override void Initialize()
     {
         base.Initialize();
-
-        // VPGui edit
-        InventoryPanel = new HUDInventoryPanel();
-        InventoryPanel.Name = "InventoryPanel";
-        InventoryPanel.Texture = _vpUIManager.GetTexturePath("/Textures/Interface/LoraAshen/down_panel_background_full.png");
-        if (InventoryPanel.Texture is not null)
-            InventoryPanel.Size = (InventoryPanel.Texture.Size.X, InventoryPanel.Texture.Size.Y);
-        InventoryPanel.Position = (0, 32 * (15 - 1)); // fucking calculus
-
-        _vpUIManager.Root.AddChild(InventoryPanel);
-        // VPGui edit end
 
         var gameplayStateLoad = UIManager.GetUIController<GameplayStateLoadController>();
         gameplayStateLoad.OnScreenLoad += OnScreenLoad;
@@ -403,6 +398,8 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
 
     private void AddSlot(SlotData data)
     {
+        OnSlotAdded?.Invoke(data); // VPGui edit
+
         if (!_slotGroups.TryGetValue(data.SlotGroup, out var slotGroup))
             return;
 
@@ -412,6 +409,8 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
 
     private void RemoveSlot(SlotData data)
     {
+        OnSlotRemoved?.Invoke(data); // VPGui edit
+
         if (!_slotGroups.TryGetValue(data.SlotGroup, out var slotGroup))
             return;
 
@@ -425,6 +424,8 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
 
     private void LoadSlots(EntityUid clientUid, InventorySlotsComponent clientInv)
     {
+        OnLinkInventorySlots?.Invoke(clientUid, clientInv); // VPGui edit
+
         UnloadSlots();
         _playerUid = clientUid;
         _playerInventory = clientInv;
@@ -441,6 +442,8 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
 
     private void UnloadSlots()
     {
+        OnUnlinkInventory?.Invoke(); // VPGui edit
+
         if (_inventoryButton != null)
             _inventoryButton.Visible = false;
 
@@ -456,6 +459,8 @@ public sealed class InventoryUIController : UIController, IOnStateEntered<Gamepl
 
     private void SpriteUpdated(SlotSpriteUpdate update)
     {
+        OnSpriteUpdate?.Invoke(update); // VPGui edit
+
         var (entity, group, name, showStorage) = update;
 
         if (_strippingWindow?.InventoryButtons.GetButton(update.Name) is { } inventoryButton)

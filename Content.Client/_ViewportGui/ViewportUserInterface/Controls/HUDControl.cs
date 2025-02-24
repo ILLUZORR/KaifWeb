@@ -343,7 +343,8 @@ public class HUDControl : IDisposable
     {
         foreach (var child in Children.ToArray())
         {
-            child.Draw(args);
+            if (child.VisibleInTree)
+                child.Draw(args);
         }
     }
 

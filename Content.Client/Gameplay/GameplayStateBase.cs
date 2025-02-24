@@ -54,6 +54,7 @@ namespace Content.Client.Gameplay
 
         private EntityUid? RecursivelyFindUiEntity(Control? control)
         {
+            // TODO: Need add finding for VPGui's elements
             if (control == null)
                 return null;
 

@@ -42,6 +42,22 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private HotbarGui? HandsGui => UIManager.GetActiveUIWidgetOrNull<HotbarGui>();
 
+    // VPGui edit - because by phantom reasons, when we try to link addional event from another controller,
+    // it call function double, triple and etc.
+    // So, only way to keep original code and fix that shit - use events from controller directly.
+
+    public event Action<string, HandLocation>? OnPlayerAddHand;
+    public event Action<string>? OnPlayerRemoveHand;
+    public event Action<string?>? OnPlayerSetActiveHand;
+    public event Action<HandsComponent>? OnPlayerHandsAdded;
+    public event Action? OnPlayerHandsRemoved;
+    public event Action<string, EntityUid>? OnPlayerItemAdded;
+    public event Action<string, EntityUid>? OnPlayerItemRemoved;
+    public event Action<string>? OnPlayerHandBlocked;
+    public event Action<string>? OnPlayerHandUnblocked;
+
+    // VPGui edit end
+
     public void OnSystemLoaded(HandsSystem system)
     {
         _handsSystem.OnPlayerAddHand += OnAddHand;
@@ -70,6 +86,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private void OnAddHand(string name, HandLocation location)
     {
+        OnPlayerAddHand?.Invoke(name, location); // VPGui edit
+
         AddHand(name, location);
     }
 
@@ -104,6 +122,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private void UnloadPlayerHands()
     {
+        OnPlayerHandsRemoved?.Invoke(); // VPGui edit
+
         if (HandsGui != null)
             HandsGui.Visible = false;
 
@@ -119,6 +139,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private void LoadPlayerHands(HandsComponent handsComp)
     {
+        OnPlayerHandsAdded?.Invoke(handsComp); // VPGui edit
+
         DebugTools.Assert(_playerHandsComponent == null);
         if (HandsGui != null)
             HandsGui.Visible = true;
@@ -148,6 +170,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private void HandBlocked(string handName)
     {
+        OnPlayerHandBlocked?.Invoke(handName); // VPGui edit
+
         if (!_handLookup.TryGetValue(handName, out var hand))
         {
             return;
@@ -158,6 +182,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private void HandUnblocked(string handName)
     {
+        OnPlayerHandUnblocked?.Invoke(handName); // VPGui edit
+
         if (!_handLookup.TryGetValue(handName, out var hand))
         {
             return;
@@ -175,6 +201,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private void OnItemAdded(string name, EntityUid entity)
     {
+        OnPlayerItemAdded?.Invoke(name, entity); // VPGui edit
+
         var hand = GetHand(name);
         if (hand == null)
             return;
@@ -195,6 +223,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private void OnItemRemoved(string name, EntityUid entity)
     {
+        OnPlayerItemRemoved?.Invoke(name, entity); // VPGui edit
+
         var hand = GetHand(name);
         if (hand == null)
             return;
@@ -235,6 +265,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private void SetActiveHand(string? handName)
     {
+        OnPlayerSetActiveHand?.Invoke(handName); // VPGui edit
+
         if (handName == null)
         {
             if (_activeHand != null)
@@ -354,6 +386,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private void RemoveHand(string handName)
     {
+        OnPlayerRemoveHand?.Invoke(handName); // VPGui edit
+
         RemoveHand(handName, out _);
     }
 
