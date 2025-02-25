@@ -169,10 +169,10 @@ namespace Content.Client.Entry
             _voteManager.Initialize();
 
             // Change any hardcoded staff
-            _userInterfaceManager.SetDefaultTheme("SS14LoraAshenTheme");
+            //_userInterfaceManager.SetDefaultTheme("SS14LoraAshenTheme");
             // TODO: Any players can join on the server from another forks. Need make replacement feature on RWs hud icons
             //_userInterfaceManager.SetActiveTheme(_configManager.GetCVar(CVars.InterfaceTheme));
-            _userInterfaceManager.SetActiveTheme("SS14LoraAshenTheme");
+           // _userInterfaceManager.SetActiveTheme("SS14LoraAshenTheme");
             //_configManager.SetCVar(CCVars.ToggleWalk, true);
             _configManager.SetCVar(CCVars.ChatEnableFancyBubbles, false);
 

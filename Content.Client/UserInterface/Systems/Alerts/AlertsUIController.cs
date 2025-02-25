@@ -36,7 +36,7 @@ public sealed class AlertsUIController : UIController, IOnStateEntered<GameplayS
         // VPGui edit
         AlertsPanel = new HUDAlertsPanel();
         AlertsPanel.Name = "AlertsPanel";
-        AlertsPanel.Texture = _vpUIManager.GetTexturePath("/Textures/Interface/LoraAshen/right_panel_background_full.png");
+        AlertsPanel.Texture = _vpUIManager.GetTexturePath("/Textures/Interface/Default/right_panel_background_full.png");
         if (AlertsPanel.Texture is not null)
         {
             AlertsPanel.Size = (AlertsPanel.Texture.Size.X, AlertsPanel.Texture.Size.Y);

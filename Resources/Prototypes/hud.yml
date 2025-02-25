@@ -1,8 +1,14 @@
 - type: hudTheme
-  id: SS14LoraAshenTheme
-  name: ui-options-hud-theme-loraashen
-  path: LoraAshen
+  id: SS14DefaultTheme
+  name: ui-options-hud-theme-default
+  path: Default
   order: 1
+
+#- type: hudTheme
+#  id: SS14LoraAshenTheme
+#  name: ui-options-hud-theme-loraashen
+#  path: LoraAshen
+#  order: 1
 
 # TODO: Remove, until default (from forks) theme will be replacement by some managers on client start
 #- type: hudTheme

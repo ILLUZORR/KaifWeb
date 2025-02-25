@@ -89,6 +89,9 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
         EngineKeyFunctions.CameraRotateLeft,
         EngineKeyFunctions.CameraRotateRight,
 
+        // Hands
+        ContentKeyFunctions.SwapHands,
+
         // Debug info
         EngineKeyFunctions.ShowDebugConsole,
         EngineKeyFunctions.ShowDebugMonitors,
