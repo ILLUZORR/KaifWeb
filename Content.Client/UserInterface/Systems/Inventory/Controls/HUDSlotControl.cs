@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Client._ViewportGui.ViewportUserInterface;
 using Content.Client._ViewportGui.ViewportUserInterface.UI;
 using Content.Client.UserInterface.Systems.Inventory.Controls;
@@ -15,7 +16,7 @@ namespace Content.Client.UserInterface.Systems.Inventory.Controls;
 /// </summary>
 public class HUDSlotControl : HUDButton, IEntityControl
 {
-    [Dependency] private readonly IUserInterfaceManager _UIManager = default!;
+    [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
 
     private Texture? _buttonTexture;
 
@@ -47,6 +48,8 @@ public class HUDSlotControl : HUDButton, IEntityControl
         }
     }
 
+    public string HUDSlotGroup { get; set; } = "Default";
+
     public bool Highlight { get => HighlightRect.Visible; set => HighlightRect.Visible = value; }
 
     public bool Blocked { get => BlockedRect.Visible; set => BlockedRect.Visible = value; }
@@ -58,7 +61,7 @@ public class HUDSlotControl : HUDButton, IEntityControl
         set
         {
             _blockedTexturePath = value;
-            BlockedRect.Texture = _UIManager.CurrentTheme.ResolveTextureOrNull(_blockedTexturePath)?.Texture;
+            BlockedRect.Texture = _uiManager.CurrentTheme.ResolveTextureOrNull(value)?.Texture;
         }
     }
 
@@ -91,7 +94,7 @@ public class HUDSlotControl : HUDButton, IEntityControl
         set
         {
             _highlightTexturePath = value;
-            HighlightRect.Texture = _UIManager.CurrentTheme.ResolveTextureOrNull(_highlightTexturePath)?.Texture;
+            HighlightRect.Texture = _uiManager.CurrentTheme.ResolveTextureOrNull(value)?.Texture;
         }
     }
 
@@ -106,12 +109,7 @@ public class HUDSlotControl : HUDButton, IEntityControl
         IoCManager.InjectDependencies(this);
         Name = "SlotButton_null";
         Size = (DefaultButtonSize, DefaultButtonSize);
-
-        HighlightTexturePath = "slot_highlight_back";
-        BlockedTexturePath = "blocked";
-
-        OnKeyBindDown += OnButtonPressed;
-        OnKeyBindUp += OnButtonUnpressed;
+        CanEmitSound = false;
 
         AddChild(BlockedRect = new HUDTextureRect
         {
@@ -124,6 +122,12 @@ public class HUDSlotControl : HUDButton, IEntityControl
             Visible = false,
             Size = (DefaultButtonSize, DefaultButtonSize)
         });
+
+        HighlightTexturePath = "slot_highlight_back";
+        BlockedTexturePath = "blocked";
+
+        OnKeyBindDown += OnButtonPressed;
+        OnKeyBindUp += OnButtonUnpressed;
     }
 
     public override void Draw(in ViewportUIDrawArgs args)
@@ -137,6 +141,14 @@ public class HUDSlotControl : HUDButton, IEntityControl
         }
 
         handle.DrawTextureRect(_buttonTexture, new UIBox2(GlobalPosition, GlobalPosition + Size));
+        if (Entity is not null)
+            handle.DrawEntity(
+                (EntityUid) Entity,
+                GlobalPosition,
+                new Vector2(1f, 1f),
+                Angle.Zero,
+                Angle.Zero,
+                Direction.South);
 
         base.Draw(args);
     }
@@ -149,10 +161,10 @@ public class HUDSlotControl : HUDButton, IEntityControl
 
     private void UpdateButtonTexture()
     {
-        var fullTexture = _UIManager.CurrentTheme.ResolveTextureOrNull(_fullButtonTexturePath);
+        var fullTexture = _uiManager.CurrentTheme.ResolveTextureOrNull(_fullButtonTexturePath);
         var texture = Entity.HasValue && fullTexture != null
             ? fullTexture.Texture
-            : _UIManager.CurrentTheme.ResolveTextureOrNull(_buttonTexturePath)?.Texture;
+            : _uiManager.CurrentTheme.ResolveTextureOrNull(_buttonTexturePath)?.Texture;
         _buttonTexture = texture;
     }
 

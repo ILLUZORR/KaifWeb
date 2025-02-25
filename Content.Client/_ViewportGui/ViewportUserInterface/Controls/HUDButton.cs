@@ -17,6 +17,11 @@ public class HUDButton : HUDControl
 
     public event Action<HUDBoundKeyEventArgs>? OnPressed;
 
+    /// <summary>
+    /// Enable/Desiable click/hover sounds.
+    /// </summary>
+    public bool CanEmitSound { get; set; } = true;
+
     public HUDButton()
     {
         IoCManager.InjectDependencies(this);
@@ -52,7 +57,8 @@ public class HUDButton : HUDControl
             args.Function == ContentKeyFunctions.MoveStoredItem || // TODO: By some reasons UIClick doesn't work with viewport
             args.Function == EngineKeyFunctions.UIRightClick))
         {
-            _vpUIManager.PlayClickSound();
+            if (CanEmitSound)
+                _vpUIManager.PlayClickSound();
             OnPressed?.Invoke(new HUDBoundKeyEventArgs(args, this));
         }
     }

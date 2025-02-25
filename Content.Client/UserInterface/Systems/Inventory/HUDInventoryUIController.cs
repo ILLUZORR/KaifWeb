@@ -14,6 +14,7 @@ using Content.Client.UserInterface.Systems.Inventory.Widgets;
 using Content.Client.UserInterface.Systems.Inventory.Windows;
 using Content.Client.UserInterface.Systems.Storage;
 using Content.Shared.Containers.ItemSlots;
+using Content.Shared.Hands;
 using Content.Shared.Hands.Components;
 using Content.Shared.Input;
 using Content.Shared.Inventory.VirtualItem;
@@ -77,7 +78,7 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         base.Initialize();
 
         // VPGui edit
-        InventoryPanel = new HUDInventoryPanel();
+        InventoryPanel = new HUDInventoryPanel(this);
         InventoryPanel.Name = "InventoryPanel";
         InventoryPanel.Texture = _vpUIManager.GetTexturePath("/Textures/Interface/LoraAshen/down_panel_background_full.png");
         if (InventoryPanel.Texture is not null)
@@ -97,7 +98,6 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
 
     private void OnScreenLoad()
     {
-        Reload();
     }
 
     public void OnStateEntered(GameplayState state)
@@ -108,9 +108,11 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
     {
     }
 
-    private HUDSlotButton CreateSlotButton(SlotData data)
+    /*
+    public HUDSlotButton CreateSlotButton(SlotData data)
     {
         var button = new HUDSlotButton(data);
+        button.HUDSlotGroup = data.SlotDef.HUDSlotGroup;
         button.Pressed += ItemPressed;
         // TODO: Add StoragePressed for container items
         //button.Hover += SlotButtonHovered;
@@ -118,51 +120,50 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         return button;
     }
 
-    private HUDSlotButton CreateHandButton(SlotData data)
+    public HUDSlotButton CreateHandButton(SlotData data)
     {
         var button = new HUDSlotButton(data);
+        button.HUDSlotGroup = HUDInventoryPanel.HandsGroup;
         button.Pressed += HandPressed;
         // TODO: Add StoragePressed for container items
         //button.Hover += SlotButtonHovered;
 
         return button;
     }
+    */
 
     // Neuron Activation
     public void OnSystemLoaded(ClientInventorySystem system)
     {
-        if (_inventory is null)
-            return;
+        //if (_inventory is null)
+        //    return;
 
-        _inventory.OnSlotAdded += AddSlot;
-        _inventory.OnSlotRemoved += RemoveSlot;
-        _inventory.OnLinkInventorySlots += LoadSlots;
-        _inventory.OnUnlinkInventory += UnloadSlots;
-        _inventory.OnSpriteUpdate += SpriteUpdated;
+        _inventorySystem.OnSlotAdded += AddSlot;
+        _inventorySystem.OnSlotRemoved += RemoveSlot;
+        _inventorySystem.OnLinkInventorySlots += LoadSlots;
+        _inventorySystem.OnUnlinkInventory += UnloadSlots;
+        _inventorySystem.OnSpriteUpdate += SpriteUpdated;
     }
 
     // Neuron Deactivation
     public void OnSystemUnloaded(ClientInventorySystem system)
     {
-        if (_inventory is null)
-            return;
+        //if (_inventory is null)
+        //    return;
 
-        _inventory.OnSlotAdded -= AddSlot;
-        _inventory.OnSlotRemoved -= RemoveSlot;
-        _inventory.OnLinkInventorySlots -= LoadSlots;
-        _inventory.OnUnlinkInventory -= UnloadSlots;
-        _inventory.OnSpriteUpdate -= SpriteUpdated;
+        _inventorySystem.OnSlotAdded -= AddSlot;
+        _inventorySystem.OnSlotRemoved -= RemoveSlot;
+        _inventorySystem.OnLinkInventorySlots -= LoadSlots;
+        _inventorySystem.OnUnlinkInventory -= UnloadSlots;
+        _inventorySystem.OnSpriteUpdate -= SpriteUpdated;
     }
 
-    public void Reload()
+    public void SetHand(string handName)
     {
-        ReloadHands();
-        ReloadSlots();
-
-        //TODO: Re position slots on the screen
+        EntityManager.RaisePredictiveEvent(new RequestSetHandEvent(handName));
     }
 
-    private void ItemPressed(GUIBoundKeyEventArgs args, HUDSlotControl control)
+    public void ItemPressed(GUIBoundKeyEventArgs args, HUDSlotControl control)
     {
         var slot = control.SlotName;
 
@@ -202,7 +203,7 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         args.Handle();
     }
 
-    private void HandPressed(GUIBoundKeyEventArgs args, HUDSlotControl hand)
+    public void HandPressed(GUIBoundKeyEventArgs args, HUDSlotControl hand)
     {
         if (_playerHandsComponent == null)
         {
@@ -243,19 +244,23 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
 
     private void AddSlot(SlotData data)
     {
+        InventoryPanel?.UpdateSlots(_playerInventory);
     }
 
     private void RemoveSlot(SlotData data)
     {
+        InventoryPanel?.UpdateSlots(_playerInventory);
     }
 
     private void AddHand(string handName, HandLocation location)
     {
+        InventoryPanel?.UpdateHands(_playerHandsComponent);
     }
 
     private void RemoveHand(string handName)
     {
-        RemoveHand(handName, out var _);
+        InventoryPanel?.UpdateHands(_playerHandsComponent);
+        //RemoveHand(handName, out var _);
     }
 
     private bool RemoveHand(string handName, out HUDHandButton? handButton)
@@ -264,23 +269,13 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         return false;
     }
 
-    public void ReloadHands()
-    {
-        //_handsSystem.ReloadHandButtons();
-    }
-
-    public void ReloadSlots()
-    {
-        _inventorySystem.ReloadInventory();
-    }
-
     private void LoadSlots(EntityUid clientUid, InventorySlotsComponent clientInv)
     {
         UnloadSlots();
         _playerUid = clientUid;
         _playerInventory = clientInv;
 
-        //UpdateInventoryHotbar(_playerInventory);
+        InventoryPanel?.UpdateSlots(_playerInventory);
     }
 
     private void UnloadSlots()
@@ -288,11 +283,12 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         _playerUid = null;
         _playerInventory = null;
 
-        //UpdateInventoryHotbar(null);
+        InventoryPanel?.UpdateSlots(_playerInventory);
     }
 
     private void SpriteUpdated(SlotSpriteUpdate update)
     {
+        // TODO: Need add sprite updated logic
         var (entity, group, name, showStorage) = update;
     }
 
@@ -333,7 +329,7 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
 
     private void OnAddHand(string name, HandLocation location)
     {
-        //AddHand(name, location);
+        InventoryPanel?.UpdateHands(_playerHandsComponent);
     }
 
     private void OnItemAdded(string name, EntityUid entity)
@@ -346,14 +342,21 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
 
     private void SetActiveHand(string? handName)
     {
+        InventoryPanel?.SetActiveHand(handName);
     }
 
     private void LoadPlayerHands(HandsComponent handsComp)
     {
+        _playerHandsComponent = handsComp;
+
+        InventoryPanel?.UpdateHands(_playerHandsComponent);
     }
 
     private void UnloadPlayerHands()
     {
+        _playerHandsComponent = null;
+
+        InventoryPanel?.UpdateHands(_playerHandsComponent);
     }
 
     private void HandBlocked(string handName)

@@ -8,10 +8,13 @@ public sealed class HUDHandButton : HUDSlotControl
 {
     public HandLocation HandLocation { get; }
 
+    public string HandName { get; }
+
     public HUDHandButton(string handName, HandLocation handLocation)
     {
         HandLocation = handLocation;
         Name = "hand_" + handName;
+        HandName = handName;
         SlotName = handName;
         SetBackground(handLocation);
     }
