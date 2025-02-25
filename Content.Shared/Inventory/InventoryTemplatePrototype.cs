@@ -25,10 +25,19 @@ public sealed partial class SlotDefinition
     [DataField("slotFlags")] public SlotFlags SlotFlags { get; private set; } = SlotFlags.PREVENTEQUIP;
     [DataField("showInWindow")] public bool ShowInWindow { get; private set; } = true;
     [DataField("slotGroup")] public string SlotGroup { get; private set; } = "Default";
+    /// <summary>
+    /// Like 'slotGroup', but for HUD slots.
+    /// </summary>
+    [DataField("hudSlotGroup")] public string HUDSlotGroup { get; private set; } = "Default";
     [DataField("stripTime")] public TimeSpan StripTime { get; private set; } = TimeSpan.FromSeconds(4f);
 
     [DataField("uiWindowPos", required: true)]
     public Vector2i UIWindowPosition { get; private set; }
+    /// <summary>
+    /// Like 'uiWindowPos', but for HUD.
+    /// </summary>
+    [DataField("hudWindowPos")]
+    public Vector2i HUDWindowPosition { get; private set; } = Vector2i.Zero;
 
     [DataField("strippingWindowPos", required: true)]
     public Vector2i StrippingWindowPos { get; private set; }

@@ -112,6 +112,7 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
     {
         var button = new HUDSlotButton(data);
         button.Pressed += ItemPressed;
+        // TODO: Add StoragePressed for container items
         //button.Hover += SlotButtonHovered;
 
         return button;
@@ -121,6 +122,7 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
     {
         var button = new HUDSlotButton(data);
         button.Pressed += HandPressed;
+        // TODO: Add StoragePressed for container items
         //button.Hover += SlotButtonHovered;
 
         return button;
@@ -207,7 +209,7 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
             return;
         }
 
-        if (args.Function == EngineKeyFunctions.UIClick)
+        if (args.Function == ContentKeyFunctions.MoveStoredItem)
         {
             _handsSystem.UIHandClick(_playerHandsComponent, hand.SlotName);
         }

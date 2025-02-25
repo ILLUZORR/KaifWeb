@@ -327,20 +327,22 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
     /// <returns>Does mouse cursor is focused on control</returns>
     private bool DoControlsBounds(HUDControl uicontrol, ref HUDBoundsCheckArgs boundsArgs, HUDKeyBindInfo keyBindInfo, Vector2i mousePos)
     {
+        // Check if the mouse is within the bounds of the current control
         if (InControlBounds(uicontrol.GlobalPosition, uicontrol.Size, mousePos))
         {
             if (uicontrol.MouseFilter >= HUDMouseFilterMode.Pass && uicontrol.VisibleInTree)
             {
+                // Handle key bind events
                 if (keyBindInfo.KeyBindType == HUDKeyBindType.Down)
                     uicontrol.KeyBindDown(keyBindInfo.KeyEventArgs);
                 else if (keyBindInfo.KeyBindType == HUDKeyBindType.Up)
                     uicontrol.KeyBindUp(keyBindInfo.KeyEventArgs);
 
-                // На всякий
+                // Update bounds arguments
                 boundsArgs.InBounds = true;
                 boundsArgs.IsFocused = true;
 
-                // We founded control and don't wanna try press any elements. So, interupt and return True
+                // If the control stops further interaction, return true
                 if (uicontrol.MouseFilter == HUDMouseFilterMode.Stop)
                     return true;
             }
@@ -348,9 +350,11 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
             boundsArgs.InBounds = true;
         }
 
-        // Recursive for childs elements. Do the same logic, until it will be interrupt by HUDMouseFilterMode.Stop
-        foreach (var control in uicontrol.Children)
+        // Reverse recursive traversal: iterate through children in reverse order
+        var childsList = uicontrol.Children.ToArray();
+        for (int i = uicontrol.ChildCount - 1; i >= 0; i--)
         {
+            var control = childsList[i];
             if (DoControlsBounds(control, ref boundsArgs, keyBindInfo, mousePos))
                 return true;
         }
