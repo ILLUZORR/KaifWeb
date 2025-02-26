@@ -54,7 +54,7 @@ public sealed class CombatModeSystem : SharedCombatModeSystem
 
         _cfg.OnValueChanged(CCVars.InterfaceVolume, SetInterfaceVolume, true);
 
-        //Subs.CVar(_cfg, CCVars.CombatModeIndicatorsPointShow, OnShowCombatIndicatorsChanged, true); // FINSTER EDIT
+        Subs.CVar(_cfg, CCVars.CombatModeIndicatorsPointShow, OnShowCombatIndicatorsChanged, true); // FINSTER EDIT
         SetCombatSounds(_cfg.GetCVar(CCVars.UICombatModeOnSound), _cfg.GetCVar(CCVars.UICombatModeOffSound));
     }
 
@@ -124,7 +124,7 @@ public sealed class CombatModeSystem : SharedCombatModeSystem
 
     public override void Shutdown()
     {
-        //_overlayManager.RemoveOverlay<CombatModeIndicatorsOverlay>(); // FINSTER EDIT
+        _overlayManager.RemoveOverlay<CombatModeIndicatorsOverlay>();
 
         base.Shutdown();
     }
@@ -187,8 +187,6 @@ public sealed class CombatModeSystem : SharedCombatModeSystem
             _combatOffSource?.Restart();
     }
 
-    // FINSTER EDIT - mouse position works incorrectly with leftpanel
-    /*
     private void OnShowCombatIndicatorsChanged(bool isShow)
     {
         if (isShow)
@@ -205,6 +203,4 @@ public sealed class CombatModeSystem : SharedCombatModeSystem
             _overlayManager.RemoveOverlay<CombatModeIndicatorsOverlay>();
         }
     }
-    */
-    // FINSTER EDIT END
 }

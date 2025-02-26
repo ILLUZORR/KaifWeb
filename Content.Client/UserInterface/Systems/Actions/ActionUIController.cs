@@ -944,8 +944,6 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         // override "held-item" overlay
         var provider = action.Container;
 
-        // FINSTER EDIT
-        /*
         if (action.TargetingIndicator && _overlays.TryGetOverlay<ShowHandItemOverlay>(out var handOverlay))
         {
             if (action.ItemIconStyle == ItemActionIconStyle.BigItem && action.Container != null)
@@ -957,8 +955,6 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             else if (action.Icon != null)
                 handOverlay.IconOverride = _spriteSystem.Frame0(action.Icon);
         }
-        */
-        // FINSTER EDIT END
 
         if (_container != null)
         {
@@ -1018,15 +1014,11 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
             }
         }
 
-        // FINSTER EDIT
-        /*
         if (!_overlays.TryGetOverlay<ShowHandItemOverlay>(out var handOverlay))
             return;
 
         handOverlay.IconOverride = null;
         handOverlay.EntityOverride = null;
-        */
-        // FINSTER EDIT END
     }
 
     private sealed class ActionPage

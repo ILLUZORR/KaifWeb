@@ -70,8 +70,8 @@ public sealed partial class HungerComponent : Component
     [AutoNetworkedField]
     public Dictionary<HungerThreshold, ProtoId<AlertPrototype>> HungerThresholdAlerts = new()
     {
-        { HungerThreshold.Overfed, "Overfed" },
-        { HungerThreshold.Okay, "HungerOkay" },
+        //{ HungerThreshold.Overfed, "Overfed" },
+        //{ HungerThreshold.Okay, "HungerOkay" },
         { HungerThreshold.Peckish, "Peckish" },
         { HungerThreshold.Starving, "Starving" },
         { HungerThreshold.Dead, "HungerDead" }

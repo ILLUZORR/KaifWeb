@@ -61,21 +61,24 @@ public sealed class BloodstreamSystem : EntitySystem
         SubscribeLocalEvent<BloodstreamComponent, RejuvenateEvent>(OnRejuvenate);
 
         // FINSTER EDIT
-        SubscribeLocalEvent<BloodstreamComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<BloodstreamComponent, ComponentShutdown>(OnShutdown);
+        //SubscribeLocalEvent<BloodstreamComponent, ComponentStartup>(OnStartup);
+        //SubscribeLocalEvent<BloodstreamComponent, ComponentShutdown>(OnShutdown);
         // FINSTER EDIT END
     }
 
     // FINSTER EDIT
+    /*
     private void OnStartup(Entity<BloodstreamComponent> ent, ref ComponentStartup args)
     {
-        _alertsSystem.ShowAlert(ent, ent.Comp.BleedingAlert, 0);
+        //_alertsSystem.ShowAlert(ent, ent.Comp.BleedingAlert, 0);
     }
 
     private void OnShutdown(Entity<BloodstreamComponent> ent, ref ComponentShutdown args)
     {
-        _alertsSystem.ClearAlertCategory(ent, ent.Comp.BleedingCategory);
+        _alertsSystem.ClearAlert(ent, ent.Comp.BleedingAlert);
+        //_alertsSystem.ClearAlertCategory(ent, ent.Comp.BleedingCategory);
     }
+    */
     // FINSTER EDIT END
 
     private void OnMapInit(Entity<BloodstreamComponent> ent, ref MapInitEvent args)
@@ -433,7 +436,8 @@ public sealed class BloodstreamSystem : EntitySystem
         component.BleedAmount = Math.Clamp(component.BleedAmount, 0, component.MaxBleedAmount);
 
         if (component.BleedAmount == 0)
-            _alertsSystem.ShowAlert(uid, component.BleedingAlert, 0); // FINSTER EDIT
+            //_alertsSystem.ShowAlert(uid, component.BleedingAlert, 0); // FINSTER EDIT
+            _alertsSystem.ClearAlert(uid, component.BleedingAlert);
         else
         {
             var severity = (short) Math.Clamp(Math.Round(component.BleedAmount, MidpointRounding.ToZero), 0, 10);
