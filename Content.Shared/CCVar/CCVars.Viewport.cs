@@ -32,5 +32,5 @@ public sealed partial class CCVars
         CVarDef.Create("viewport.vertical_fit", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
     public static readonly CVarDef<string> ViewportFilter =
-        CVarDef.Create("viewport.filter", "LoraNoise", CVar.CLIENTONLY | CVar.ARCHIVE);
+        CVarDef.Create("viewport.filter", "None", CVar.CLIENTONLY | CVar.ARCHIVE);
 }

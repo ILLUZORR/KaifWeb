@@ -78,6 +78,8 @@ public class HUDInventoryPanel : HUDTextureRect
 
         ToggleMiscSlotsButton = new();
         ToggleMiscSlotsButton.Texture = _uiManager.CurrentTheme.ResolveTexture("slots_toggle");
+        if (ToggleMiscSlotsButton.Texture != null)
+            ToggleMiscSlotsButton.Size = ToggleMiscSlotsButton.Texture.Size;
         ToggleMiscSlotsButton.OnPressed += (_) =>
         {
             ToggleMiscSlots();
@@ -133,7 +135,7 @@ public class HUDInventoryPanel : HUDTextureRect
                 MiscSlotsContainer.Position = (HandsContainer.Size.X, 0);
             */
             SlotsContainer.Position = (0, -64);
-            MiscSlotsContainer.Position = (HandsContainer.Size.X, 0 -64);
+            MiscSlotsContainer.Position = (HandsContainer.Size.X, -64);
         }
 
         UpdateToggleMiscButton();
@@ -280,18 +282,33 @@ public class HUDInventoryPanel : HUDTextureRect
         if (_activeHand is not null)
             _activeHand.Highlight = false;
 
+        HUDHandButton? switchHandsButton = null;
+
         foreach (var child in HandsContainer.Children)
         {
             var hand = child as HUDHandButton;
+
             if (hand is null)
                 continue;
+
+            // For updating switch button
+            if (hand.HandName == "switchbutton")
+                switchHandsButton = hand;
+
             if (hand.HandName == handName)
             {
                 _activeHand = hand;
                 _activeHand.Highlight = true;
-                return;
             }
         }
+
+        if (switchHandsButton is null || _activeHand is null)
+            return;
+
+        if (_activeHand.HandLocation == HandLocation.Right)
+            switchHandsButton.ButtonTexturePath = "Buttons/hands_right";
+        else
+            switchHandsButton.ButtonTexturePath = "Buttons/hands_left";
     }
 
     public override void FrameUpdate(FrameEventArgs args)
