@@ -31,6 +31,10 @@ using static Content.Client.Inventory.ClientInventorySystem;
 
 namespace Content.Client.UserInterface.Systems.Inventory;
 
+/// <summary>
+/// TODO: Need fix virtual entity rendering;
+/// TODO 2: Need add hover items rendering in slots, when we held entity in hands
+/// </summary>
 public sealed class HUDInventoryUIController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>,
     IOnSystemChanged<ClientInventorySystem>, IOnSystemChanged<HandsSystem>
 {
@@ -181,11 +185,11 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
             return;
         }
 
-        if (args.Function == ContentKeyFunctions.ExamineEntity)
+        if (args.Function == EngineKeyFunctions.TextCursorSelect) // (args.Function == ContentKeyFunctions.ExamineEntity)
         {
             _inventorySystem.UIInventoryExamine(slot, _playerUid.Value);
         }
-        else if (args.Function == EngineKeyFunctions.UseSecondary)
+        else if (args.Function == EngineKeyFunctions.UIRightClick) // (args.Function == EngineKeyFunctions.UseSecondary)
         {
             _inventorySystem.UIInventoryOpenContextMenu(slot, _playerUid.Value);
         }
@@ -216,7 +220,7 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         {
             _handsSystem.UIHandClick(_playerHandsComponent, hand.SlotName);
         }
-        else if (args.Function == EngineKeyFunctions.UseSecondary)
+        else if (args.Function == EngineKeyFunctions.UIRightClick) // (args.Function == EngineKeyFunctions.UseSecondary)
         {
             _handsSystem.UIHandOpenContextMenu(hand.SlotName);
         }
@@ -228,7 +232,7 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         {
             _handsSystem.UIHandAltActivateItem(hand.SlotName);
         }
-        else if (args.Function == ContentKeyFunctions.ExamineEntity)
+        else if (args.Function == EngineKeyFunctions.TextCursorSelect) // (args.Function == ContentKeyFunctions.ExamineEntity)
         {
             _handsSystem.UIInventoryExamine(hand.SlotName);
         }
