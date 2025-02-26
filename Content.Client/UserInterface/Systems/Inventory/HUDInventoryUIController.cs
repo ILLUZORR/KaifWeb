@@ -98,10 +98,12 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
 
     private void OnScreenLoad()
     {
+        UpdateInventoryHotbar(_playerInventory);
     }
 
     public void OnStateEntered(GameplayState state)
     {
+        UpdateInventoryHotbar(_playerInventory);
     }
 
     public void OnStateExited(GameplayState state)
@@ -275,7 +277,7 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         _playerUid = clientUid;
         _playerInventory = clientInv;
 
-        InventoryPanel?.UpdateSlots(_playerInventory);
+        UpdateInventoryHotbar(_playerInventory);
     }
 
     private void UnloadSlots()
@@ -283,13 +285,59 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         _playerUid = null;
         _playerInventory = null;
 
-        InventoryPanel?.UpdateSlots(_playerInventory);
+        UpdateInventoryHotbar(_playerInventory);
+    }
+
+    private void UpdateInventoryHotbar(InventorySlotsComponent? clientInv)
+    {
+        InventoryPanel?.UpdateSlots(clientInv);
+
+        if (clientInv is null)
+            return;
+
+        foreach (var (_, data) in clientInv.SlotData)
+        {
+            var showStorage = _entities.HasComponent<StorageComponent>(data.HeldEntity);
+            var update = new SlotSpriteUpdate(data.HeldEntity, data.SlotGroup, data.SlotName, showStorage);
+            SpriteUpdated(update);
+        }
+    }
+
+    private void UpdateHandsHotbar(HandsComponent? handsComp)
+    {
+        InventoryPanel?.UpdateHands(handsComp);
+
+        if (handsComp is null)
+            return;
+
+        foreach (var (_, data) in handsComp.Hands)
+        {
+            var handName = data.Name;
+            var entity = data.HeldEntity;
+
+            // TODO: Move into single method?
+            if (_entities.TryGetComponent(entity, out VirtualItemComponent? virt))
+            {
+                // TODO: By some reasons we can'not render virtual items.
+                // And Action events works shity. So - just block hands, instead of show pulling or vitual items.
+                //virt.BlockingEntity
+                InventoryPanel?.SetHandEntity(handName, null, true);
+            }
+            else
+            {
+                InventoryPanel?.SetHandEntity(handName, entity);
+            }
+        }
     }
 
     private void SpriteUpdated(SlotSpriteUpdate update)
     {
-        // TODO: Need add sprite updated logic
         var (entity, group, name, showStorage) = update;
+
+        if (_entities.TryGetComponent(entity, out VirtualItemComponent? virtb))
+            InventoryPanel?.SetSlotEntity(name, virtb.BlockingEntity, true);
+        else
+            InventoryPanel?.SetSlotEntity(name, entity);
     }
 
     // Monkey Sees Action
@@ -301,8 +349,8 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
             return;
 
         _hands.OnPlayerAddHand += OnAddHand;
-        _hands.OnPlayerItemAdded += OnItemAdded;
-        _hands.OnPlayerItemRemoved += OnItemRemoved;
+        _hands.OnPlayerItemAdded += OnHandItemAdded;
+        _hands.OnPlayerItemRemoved += OnHandItemRemoved;
         _hands.OnPlayerSetActiveHand += SetActiveHand;
         _hands.OnPlayerRemoveHand += RemoveHand;
         _hands.OnPlayerHandsAdded += LoadPlayerHands;
@@ -317,8 +365,8 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
             return;
 
         _hands.OnPlayerAddHand -= OnAddHand;
-        _hands.OnPlayerItemAdded -= OnItemAdded;
-        _hands.OnPlayerItemRemoved -= OnItemRemoved;
+        _hands.OnPlayerItemAdded -= OnHandItemAdded;
+        _hands.OnPlayerItemRemoved -= OnHandItemRemoved;
         _hands.OnPlayerSetActiveHand -= SetActiveHand;
         _hands.OnPlayerRemoveHand -= RemoveHand;
         _hands.OnPlayerHandsAdded -= LoadPlayerHands;
@@ -332,12 +380,24 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
         InventoryPanel?.UpdateHands(_playerHandsComponent);
     }
 
-    private void OnItemAdded(string name, EntityUid entity)
+    private void OnHandItemAdded(string name, EntityUid entity)
     {
+        if (_entities.TryGetComponent(entity, out VirtualItemComponent? virt))
+        {
+            // TODO: By some reasons we can'not render virtual items.
+            // And Action events works shity. So - just block hands, instead of show pulling or vitual items.
+            //virt.BlockingEntity
+            InventoryPanel?.SetHandEntity(name, null, true);
+        }
+        else
+        {
+            InventoryPanel?.SetHandEntity(name, entity);
+        }
     }
 
-    private void OnItemRemoved(string name, EntityUid entity)
+    private void OnHandItemRemoved(string name, EntityUid entity)
     {
+        InventoryPanel?.SetHandEntity(name, null);
     }
 
     private void SetActiveHand(string? handName)
@@ -349,21 +409,23 @@ public sealed class HUDInventoryUIController : UIController, IOnStateEntered<Gam
     {
         _playerHandsComponent = handsComp;
 
-        InventoryPanel?.UpdateHands(_playerHandsComponent);
+        UpdateHandsHotbar(_playerHandsComponent);
     }
 
     private void UnloadPlayerHands()
     {
         _playerHandsComponent = null;
 
-        InventoryPanel?.UpdateHands(_playerHandsComponent);
+        UpdateHandsHotbar(_playerHandsComponent);
     }
 
     private void HandBlocked(string handName)
     {
+        InventoryPanel?.SetHandEntity(handName, null, true, doNotSetEntity: true);
     }
 
     private void HandUnblocked(string handName)
     {
+        InventoryPanel?.SetHandEntity(handName, null, false, doNotSetEntity: true);
     }
 }

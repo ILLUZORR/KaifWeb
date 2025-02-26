@@ -15,7 +15,7 @@
     HorizontalAlignment="Center">
     <controls:RecordedSplitContainer Name="ScreenContainer" HorizontalExpand="True" VerticalExpand="True" SplitWidth="0" StretchDirection="TopLeft">
         <BoxContainer Orientation="Horizontal" VerticalExpand="True">
-            <controls:CustomPanelContainer Name="LeftPanel" Access="Public" VerticalExpand="True" HorizontalExpand="False" MinWidth="192" MaxWidth="192">
+            <controls:CustomPanelContainer Visible="False" Name="LeftPanel" Access="Public" VerticalExpand="True" HorizontalExpand="False" MinWidth="192" MaxWidth="192">
                 <controls:CustomPanelContainer.PanelOverride>
                     <graphics:StyleBoxFlat BackgroundColor="#100F14" />
                 </controls:CustomPanelContainer.PanelOverride>
@@ -30,7 +30,6 @@
                             VerticalAlignment="Top"
                             HorizontalAlignment="Center"
                         />
-                        <BoxContainer Name="MainInfoAlertsContainer" Access="Public" Orientation="Horizontal" Margin="0 0 0 0" />
                     </PanelContainer>
                     <hotbar:HotbarGui Name="Hotbar" Access="Protected"/>
                     <inventory:InventoryGui Name="Inventory" Access="Protected"/>

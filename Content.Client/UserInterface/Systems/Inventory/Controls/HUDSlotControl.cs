@@ -141,10 +141,11 @@ public class HUDSlotControl : HUDButton, IEntityControl
         }
 
         handle.DrawTextureRect(_buttonTexture, new UIBox2(GlobalPosition, GlobalPosition + Size));
+
         if (Entity is not null)
             handle.DrawEntity(
                 (EntityUid) Entity,
-                GlobalPosition,
+                GlobalPosition + (Size / 2),
                 new Vector2(1f, 1f),
                 Angle.Zero,
                 Angle.Zero,

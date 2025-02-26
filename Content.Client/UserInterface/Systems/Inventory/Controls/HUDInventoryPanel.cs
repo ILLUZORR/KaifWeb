@@ -311,6 +311,41 @@ public class HUDInventoryPanel : HUDTextureRect
             switchHandsButton.ButtonTexturePath = "Buttons/hands_left";
     }
 
+    public void SetHandEntity(string? handName, EntityUid? ent, bool blocked = false, bool doNotSetEntity = false)
+    {
+        if (handName == null)
+            return;
+
+        HUDHandButton? handButton = null;
+        foreach (var child in HandsContainer.Children)
+        {
+            var childButton = child as HUDHandButton;
+            if (childButton is null || childButton.HandName != handName)
+                continue;
+            else
+                handButton = childButton;
+        }
+        if (handButton == null)
+            return;
+
+        if (!doNotSetEntity)
+            handButton.SetEntity(ent);
+        handButton.Blocked = blocked;
+    }
+
+    public void SetSlotEntity(string? slotName, EntityUid? ent, bool blocked = false)
+    {
+        if (slotName == null)
+            return;
+
+        var slotButton = Slots.FirstOrDefault(control => control.SlotName == slotName);
+        if (slotButton == null)
+            return;
+
+        slotButton.SetEntity(ent);
+        slotButton.Blocked = blocked;
+    }
+
     public override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
