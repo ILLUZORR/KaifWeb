@@ -359,7 +359,8 @@ public sealed class ViewportUserInterfaceManager : IViewportUserInterfaceManager
                     return true;
             }
 
-            if (!uicontrol.IgnoreBounds)
+            // Well... By some reasons we can't interact with panels
+            if (!uicontrol.IgnoreBounds && uicontrol.VisibleInTree)
                 boundsArgs.InBounds = true;
         }
 
