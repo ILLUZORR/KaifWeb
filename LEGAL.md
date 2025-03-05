@@ -6,7 +6,7 @@ The Authors retain all copyright to their respective work here submitted.
 
 ## Code license
 
-All ontent contributed to this repository by this fork repository authors is distributed under a closed license. See `LICENSE.txt`.
+All content contributed to this repository by this fork repository authors is distributed under a closed license. See `LICENSE.txt`.
 
 Content contributed by other authors to this repository after commit 827090907bdc509a3fb5ecfecde8cc14e5845ede36 is distributed under the terms of the GNU Affero General Public License version 3.0 unless otherwise noted. See `LICENSE-AGPLv3.txt`.
 
