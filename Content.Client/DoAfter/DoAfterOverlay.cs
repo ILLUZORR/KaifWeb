@@ -10,6 +10,7 @@ using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using Robust.Shared.Configuration;
 using Content.Shared.CCVar;
+using Robust.Shared.Graphics.RSI;
 
 namespace Content.Client.DoAfter;
 
@@ -24,6 +25,7 @@ public sealed class DoAfterOverlay : Overlay
     private readonly ProgressColorSystem _progressColor;
 
     private readonly Texture _barTexture;
+    private readonly IRsiStateLike _barRsiState;
     private readonly ShaderInstance _unshadedShader;
 
     /// <summary>
@@ -32,8 +34,8 @@ public sealed class DoAfterOverlay : Overlay
     private const float FlashTime = 0.125f;
 
     // Hardcoded width of the progress bar because it doesn't match the texture.
-    private const float StartX = 2;
-    private const float EndX = 22f;
+    //private const float StartX = 2;
+    //private const float EndX = 22f;
 
     private bool _useModernHUD = false;
 
@@ -50,6 +52,7 @@ public sealed class DoAfterOverlay : Overlay
         _progressColor = _entManager.System<ProgressColorSystem>();
         var sprite = new SpriteSpecifier.Rsi(new("/Textures/Interface/Misc/progress_bar.rsi"), "icon");
         _barTexture = _entManager.EntitySysManager.GetEntitySystem<SpriteSystem>().Frame0(sprite);
+        _barRsiState = _entManager.EntitySysManager.GetEntitySystem<SpriteSystem>().RsiStateLike(sprite);
 
         _unshadedShader = protoManager.Index<ShaderPrototype>("unshaded").Instance();
         _useModernHUD = _cfg.GetCVar(CCVars.ModernProgressBar);
@@ -130,9 +133,9 @@ public sealed class DoAfterOverlay : Overlay
                     yOffset / scale + offset / EyeManager.PixelsPerMeter * scale);
 
                 // Draw the underlying bar texture
-                handle.DrawTexture(_barTexture, position);
+                //handle.DrawTexture(_barTexture, position);
 
-                Color color;
+                //Color color;
                 float elapsedRatio;
 
                 // if we're cancelled then flick red / off.
@@ -142,53 +145,30 @@ public sealed class DoAfterOverlay : Overlay
                     elapsedRatio = (float) Math.Min(1, elapsed.TotalSeconds / doAfter.Args.Delay.TotalSeconds);
                     var cancelElapsed = (time - doAfter.CancelledTime.Value).TotalSeconds;
                     var flash = Math.Floor(cancelElapsed / FlashTime) % 2 == 0;
-                    color = GetProgressColor(0, flash ? alpha : 0);
+                    if (flash)
+                        handle.DrawTexture(_barRsiState.GetFrame(RsiDirection.South, GetFrameIndex(elapsedRatio)), position);
                 }
                 else
                 {
                     var elapsed = time - doAfter.StartTime;
                     elapsedRatio = (float) Math.Min(1, elapsed.TotalSeconds / doAfter.Args.Delay.TotalSeconds);
-
-                    if (_useModernHUD)
-                    {
-                        if (elapsedRatio < 1.0f)
-                            color = GetProgressColor(elapsedRatio, alpha);
-                        else
-                            color = GetProgressColor(0.35f, alpha); // Make orange/yellow color
-                    }
-                    else
-                    {
-                        color = GetProgressColor(elapsedRatio, alpha);
-                    }
+                    handle.DrawTexture(_barRsiState.GetFrame(RsiDirection.South, GetFrameIndex(elapsedRatio)), position);
                 }
 
-                var xProgress = (EndX - StartX) * elapsedRatio + StartX;
-
-                if (_useModernHUD)
-                {
-                    var box = new Box2(new Vector2(StartX, 2f) / EyeManager.PixelsPerMeter, new Vector2(xProgress, 5f) / EyeManager.PixelsPerMeter);
-                    box = box.Translated(position);
-                    // Brighter line, like /tg/station bar
-                    var boxInner = new Box2(new Vector2(StartX, 3f) / EyeManager.PixelsPerMeter, new Vector2(xProgress, 4f) / EyeManager.PixelsPerMeter);
-                    boxInner = boxInner.Translated(position);
-
-                    handle.DrawRect(box, color);
-                    handle.DrawRect(boxInner, Color.InterpolateBetween(color, Color.White, 0.5f));
-                }
-                else
-                {
-                    var box = new Box2(new Vector2(StartX, 3f) / EyeManager.PixelsPerMeter, new Vector2(xProgress, 4f) / EyeManager.PixelsPerMeter);
-                    box = box.Translated(position);
-
-                    handle.DrawRect(box, color);
-                }
-
-                offset += _barTexture.Height / scale;
+                offset += _barTexture.Height;
             }
         }
 
         handle.UseShader(null);
         handle.SetTransform(Matrix3x2.Identity);
+    }
+
+    private int GetFrameIndex(float percentage)
+    {
+        percentage = Math.Clamp(percentage, 0.0f, 1.0f);
+        int frameIndex = (int) Math.Round(percentage * 20);
+        frameIndex = Math.Clamp(frameIndex, 0, 20);
+        return frameIndex;
     }
 
     public Color GetProgressColor(float progress, float alpha = 1f)

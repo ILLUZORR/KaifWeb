@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Content.KayMisaZlevels.Server.Components;
 using Content.KayMisaZlevels.Shared.Components;
@@ -48,19 +49,34 @@ public sealed partial class ZDefinedStackSystem : EntitySystem
         else
             AddComp<ZStackTrackerComponent>(initialMapUid);
 
+        List<MapId> mapsToInitialize = new();
+
         // Load levels downer
         foreach (var path in defStackComp.DownLevels)
         {
-            LoadLevel(stackLoc, path, initializeMaps: initializeMaps);
+            var mapId = LoadLevel(stackLoc, path);
+            if (mapId is not null)
+                mapsToInitialize.Add((MapId) mapId);
         }
 
-        // Add initial map as lowest level in the world
+        // Add initial map as middle level in the world
         _zStack.AddToStack(initialMapUid, ref stackLoc);
 
         // Load level upper
         foreach (var path in defStackComp.UpLevels)
         {
-            LoadLevel(stackLoc, path, initializeMaps: initializeMaps);
+            var mapId = LoadLevel(stackLoc, path, initializeMaps);
+            if (mapId is not null)
+                mapsToInitialize.Add((MapId) mapId);
+        }
+
+        // Try to intialize maps
+        if (initializeMaps)
+        {
+            foreach (var mapId in mapsToInitialize)
+            {
+                _map.InitializeMap(mapId);
+            }
         }
 
         return true;
@@ -72,7 +88,7 @@ public sealed partial class ZDefinedStackSystem : EntitySystem
     /// <param name="stackLoc">What the fuck is this?</param>
     /// <param name="path">YAML Map path</param>
     /// <param name="initializeMaps">Should we initialize maps whe it was loaded.</param>
-    public void LoadLevel(EntityUid? stackLoc, ResPath path, bool initializeMaps = false)
+    public MapId? LoadLevel(EntityUid? stackLoc, ResPath path, bool initializeMaps = false)
     {
         var options = new DeserializationOptions()
         {
@@ -92,11 +108,17 @@ public sealed partial class ZDefinedStackSystem : EntitySystem
                 });
 
             Log.Info($"Created map {map.Value} for ZDefinedStackSystem system");
+
+            // Don't return MapId, because map was already initialized
+            if (initializeMaps)
+                return null;
+
+            return map.Value.Comp.MapId;
         }
         else
         {
             Log.Error($"Failed to load map from {path}!");
-            return;
+            return null;
         }
     }
 }

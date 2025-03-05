@@ -33,7 +33,8 @@ public abstract class SharedCombatModeSystem : EntitySystem
     {
         //_actionsSystem.RemoveAction(uid, component.CombatToggleActionEntity);
 
-        SetMouseRotatorComponents(uid, false);
+        // Don't use it, because we already has FixedEye button
+        //SetMouseRotatorComponents(uid, false);
     }
 
     private void OnActionPerform(EntityUid uid, CombatModeComponent component, ToggleCombatActionEvent args)
@@ -90,7 +91,8 @@ public abstract class SharedCombatModeSystem : EntitySystem
         if (!component.ToggleMouseRotator || IsNpc(entity))
             return;
 
-        SetMouseRotatorComponents(entity, value);
+        // Don't use it, because we already has FixedEye button
+        //SetMouseRotatorComponents(entity, value);
     }
 
     private void SetMouseRotatorComponents(EntityUid uid, bool value)

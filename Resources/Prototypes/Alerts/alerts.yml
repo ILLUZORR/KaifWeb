@@ -577,6 +577,33 @@
   onClick: !type:RetakeVow  { }
   description: alerts-vow-broken-desc
 
+- type: alert
+  id: Surrend
+  onClick: !type:TrySurrend { }
+  sprite: Alerts/surrend.rsi
+  states:
+  - surrend0
+  name: alerts-surrend-name
+  description: alerts-surrend-desc
+  hudPositionX: 0
+  hudPositionY: 224
+  isGeneric: false
+
+- type: alert
+  id: Fixed
+  onClick: !type:ToggleFixedEyeAlert { }
+  sprite: Alerts/fixed.rsi
+  states:
+  - fixed0
+  - fixed1
+  name: alerts-fixed-name
+  description: alerts-fixed-desc
+  minSeverity: 0
+  maxSeverity: 1
+  hudPositionX: 0
+  hudPositionY: 256
+  isGeneric: false
+
 # FINSTER EDIT - No need Pulled anymore
 #- type: alert
 #  id: Pulled

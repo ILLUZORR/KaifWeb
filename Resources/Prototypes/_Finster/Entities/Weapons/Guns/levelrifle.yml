@@ -1,0 +1,131 @@
+- type: entity
+  name: trophy winchester
+  parent: [ BaseWeaponRifle, BaseGunWieldable ]
+  id: FinsterWeaponLeverRifle
+  description: The echo of war
+  components:
+  - type: Sprite
+    sprite: _Finster/Weapons/Guns/levelrifle.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+  - type: Clothing
+    sprite: _Finster/Weapons/Guns/levelrifle.rsi
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: FinsterMagazineLeverRifle
+        insertSound: /Audio/_Finster/Weapons/LevelRifle/batrifle_magin.ogg
+        ejectSound: /Audio/_Finster/Weapons/LevelRifle/batrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazineMagnumLeverRifle
+      gun_chamber:
+        name: Chamber
+        priority: 1
+        whitelist:
+          tags:
+          - N14Cartridge762Rifle
+  - type: Gun
+    fireRate: 0.55
+    soundGunshot:
+      path: /Audio/_Finster/Weapons/LevelRifle/batrifle_fire.ogg
+  - type: ChamberMagazineAmmoProvider
+    autoCycle: false
+    autoEject: true
+    canRack: false
+    soundAutoEject:
+      path: /Audio/_Goobstation/Weapons/Guns/MagOut/garand_eject.ogg
+    soundRack:
+      path: /Audio/_Finster/Weapons/LevelRifle/combatrifle_cock.ogg
+      params:
+        volume: -3
+    soundBoltClosed:
+      path: /Audio/_Finster/Weapons/LevelRifle/bolt_close.ogg
+      params:
+        volume: -3
+    soundBoltOpened:
+      path: /Audio/_Finster/Weapons/LevelRifle/bolt_open.ogg
+      params:
+        volume: -3
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+  - type: UseDelay
+    delay: 0.2
+  - type: UseDelayBlockShoot
+  - type: Construction
+    graph: WinchesterSawn
+    node: start
+    deconstructionTarget: null
+  - type: Item
+    size: Ginormous
+
+- type: entity
+  id: FinsterMagazineLeverRifle
+  name: "rifle magazine (7.62)"
+  parent: BaseMagazineMagnumLeverRifle
+  components:
+  - type: Tag
+    tags:
+      - MagazineMagnumLeverRifle
+  - type: Sprite
+    sprite: _Goobstation/Objects/Weapons/Guns/Ammunition/Magazine/lever_rifle_mags.rsi
+  - type: BallisticAmmoProvider
+    mayTransfer: true
+    whitelist:
+      tags:
+        - N14Cartridge762Rifle
+    proto: N14Cartridge762Rifle
+    capacity: 8
+
+- type: entity
+  name: sawned winchester
+  parent: FinsterWeaponLeverRifle
+  id: FinsterWeaponLeverRifleSawned
+  description: Warcrimes time!
+  components:
+  - type: Sprite
+    sprite: _Finster/Weapons/Guns/sawnedrifle.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+  - type: UseDelay
+    delay: 0 #из-за спила все махинации с оружием ускорены
+  - type: UseDelayBlockShoot
+  - type: Gun
+    fireRate: 0.55
+  - type: Construction
+    graph: WinchesterSawn
+    node: winchestersawn
+    deconstructionTarget: null
+  - type: Clothing
+    sprite: _Finster/Weapons/Guns/sawnedrifle.rsi
+    quickEquip: false
+    slots:
+    - Belt
+  - type: Item
+    size: Normal
+  - type: GunRequiresWield
+  - type: Telescope
+    divisor: 0.7
+  - type: GunWieldBonus
+    minAngle: -10
+    maxAngle: -5
+
+- type: constructionGraph
+  id: WinchesterSawn
+  start: start
+  graph:
+    - node: start
+      edges:
+        - to: winchestersawn
+          steps:
+            - tool: Sawing
+              doAfter: 2
+    - node: winchestersawn
+      entity: FinsterWeaponLeverRifleSawned

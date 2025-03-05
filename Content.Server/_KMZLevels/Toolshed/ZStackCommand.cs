@@ -100,7 +100,11 @@ public sealed class ZStackCommand : ToolshedCommand
         _defStackSys ??= GetSys<ZDefinedStackSystem>();
         _mapLoader ??= GetSys<MapLoaderSystem>();
 
-        var opts = new DeserializationOptions { StoreYamlUids = false };
+        var opts = new DeserializationOptions
+        {
+            StoreYamlUids = false,
+            InitializeMaps = false // dont
+        };
 
         var path = new ResPath(mapPath);
         _mapLoader.TryLoadMapWithId(mapId, path, out var mapUid, out _, opts);
@@ -119,6 +123,9 @@ public sealed class ZStackCommand : ToolshedCommand
             ctx.WriteLine($"Levels for {mapId.ToString()} can't loaded! You are coocked bro!");
             return;
         }
+
+        // Initialize parent main map
+        //_map.InitializeMap(mapId);
 
         ctx.WriteLine(Loc.GetString("cmd-loadmap-success", ("mapId", mapId), ("path", mapPath)));
     }
