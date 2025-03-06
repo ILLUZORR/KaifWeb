@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "license": null,
+  "copyright": "By ILLUZORR, for Kaif Web only",
+  "size": {
+    "x": 1920,
+    "y": 1080
+  },
+  "states": [
+    {
+      "name": "shrek",
+    }
+  ]
+}

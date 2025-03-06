@@ -316,3 +316,6 @@ package-lock.json
 # Error shader logs
 error.glsl
 Docs/.obsidian/workspace.json
+start-client.bat
+start-server.bat
+.gitignore
