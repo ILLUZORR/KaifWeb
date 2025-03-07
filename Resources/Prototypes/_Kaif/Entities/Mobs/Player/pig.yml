@@ -1,0 +1,13 @@
+- type: entity
+  save: false
+  name: Urist McPig
+  parent: BaseMobPig
+  id: MobPig2
+
+- type: entity
+  name: Urist McPig
+  suffix: Random Appereance
+  parent: BaseMobPig
+  id: MobPig2RandomAppereance
+  components:
+    - type: RandomHumanoidAppearance

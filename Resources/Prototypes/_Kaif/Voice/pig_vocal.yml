@@ -1,0 +1,14 @@
+- type: speechSounds
+  id: Pig
+  saySound:
+    path: /Audio/Animals/pig_oink.ogg
+    params:
+      variation: 0.3
+  askSound:
+    path: /Audio/Animals/pig_oink.ogg
+    params:
+      variation: 0.3
+  exclaimSound:
+    path: /Audio/Animals/pig_oink.ogg
+    params:
+      variation: 0.3

@@ -1,0 +1,4 @@
+- type: soundCollection
+  id: LobbyMusicKaifWeb
+  files:
+    - /Audio/_Kaif/Lobby/metacoop_ai_upstream_kaifa.ogg
