@@ -112,7 +112,7 @@
     size: Normal
   - type: GunRequiresWield
   - type: Telescope
-    divisor: 0.7
+    divisor: 0.20
   - type: GunWieldBonus
     minAngle: -10
     maxAngle: -5

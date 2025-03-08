@@ -82,7 +82,7 @@
   - type: StatusIcon
     bounds: -0.5,-0.5,0.5,0.5
   - type: Telescope
-    divisor: 0.3
+    divisor: 0.25
   - type: Surrender
   - type: FieldOfView
   - type: FixedEye
