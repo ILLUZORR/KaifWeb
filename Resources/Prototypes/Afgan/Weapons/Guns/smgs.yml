@@ -53,7 +53,7 @@
     graph: MP9Graph
     node: mp9
   - type: Telescope
-    divisor: 0.9
+    divisor: 0.20
 
 - type: entity
   name: Самодельный ПП Luty
@@ -110,7 +110,7 @@
     graph: LutyGraph
     node: luty
   - type: Telescope
-    divisor: 0.8
+    divisor: 0.20
 
 - type: entity
   name: PM-63 RAK
@@ -165,7 +165,7 @@
             - CartridgePistol
   - type: AmmoCounter
   - type: Telescope
-    divisor: 0.5
+    divisor: 0.20
 
 #AMMO
 

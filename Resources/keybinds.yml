@@ -602,6 +602,7 @@ binds:
 - function: LookUp
   type: State
   key: Space
+  mod1: Shift
 - function: MappingUnselect
   type: State
   key: MouseRight

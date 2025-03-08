@@ -26,7 +26,11 @@ internal sealed class MappingClientSideSetupCommand : LocalizedCommands
             _lightManager.Enabled = false;
             shell.ExecuteCommand("showsubfloor");
             shell.ExecuteCommand("zoom 1.5");
-            shell.ExecuteCommand("scene MappingState");
+            // I don't like this shit.
+            // Maybe for original SS14 it is looks good, bu it's Finster!
+            // I don't wanna add supporting for another gamestate.
+            // Just let me do fucking mapping on new map!
+            //shell.ExecuteCommand("scene MappingState");
         }
     }
 }

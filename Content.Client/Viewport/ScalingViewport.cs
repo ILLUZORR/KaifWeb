@@ -1,25 +1,16 @@
-using System;
-using System.Collections.Generic;
 using System.Numerics;
 using Content.Client.UserInterface.Systems.Viewport;
 using Content.KayMisaZlevels.Client;
-using OpenToolkit.GraphicsLibraryFramework;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.ContentPack;
-using Robust.Shared.GameObjects;
 using Robust.Shared.Graphics;
-using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
-using Robust.Shared.Maths;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
-using Robust.Shared.ViewVariables;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace Content.Client.Viewport;
@@ -34,6 +25,7 @@ public sealed class ScalingViewport : Control, IViewportControl
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
+    [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IResourceManager _resManager = default!;
     //[Dependency] private readonly IPrototypeManager _prototypeManager = default!;
@@ -55,11 +47,6 @@ public sealed class ScalingViewport : Control, IViewportControl
     private int _fixedRenderScale = 1;
 
     private readonly List<CopyPixelsDelegate<Rgba32>> _queuedScreenshots = new();
-
-    private ICursor? _cursorPressed;
-    private ICursor? _cursor;
-    private Image<Rgba32>? _cursorPressedImage;
-    private Image<Rgba32>? _cursorImage;
 
     /// <summary>
     /// Viewport sized in tiles
@@ -154,11 +141,6 @@ public sealed class ScalingViewport : Control, IViewportControl
         RectClipContent = true;
 
         //ZLayerShader = _prototypeManager.Index<ShaderPrototype>("ZLayer").InstanceUnique();
-        var stream = _resManager.ContentFileRead($"/Textures/Interface/cursor.png");
-        _cursorImage = SixLabors.ImageSharp.Image.Load<Rgba32>(stream);
-
-        stream = _resManager.ContentFileRead($"/Textures/Interface/cursor_pressed.png");
-        _cursorPressedImage = SixLabors.ImageSharp.Image.Load<Rgba32>(stream);
     }
 
     protected override void KeyBindDown(GUIBoundKeyEventArgs args)
@@ -190,24 +172,6 @@ public sealed class ScalingViewport : Control, IViewportControl
     protected override void Draw(IRenderHandle renderHandle)
     {
         var handle = renderHandle.DrawingHandleScreen;
-
-        // Update cursor
-        if (_cursorImage is not null && _cursorPressedImage is not null)
-        {
-            if (_inputManager.IsKeyDown(Keyboard.Key.MouseLeft) ||
-                _inputManager.IsKeyDown(Keyboard.Key.MouseRight))
-            {
-                _cursorPressed ??= _clyde.CreateCursor(_cursorPressedImage, Vector2i.One);
-                _clyde.SetCursor(_cursorPressed);
-                CustomCursorShape = _cursorPressed;
-            }
-            else
-            {
-                _cursor ??= _clyde.CreateCursor(_cursorImage, Vector2i.One);
-                _clyde.SetCursor(_cursor);
-                CustomCursorShape = _cursor;
-            }
-        }
 
         EnsureViewportCreated();
 

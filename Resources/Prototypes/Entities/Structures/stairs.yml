@@ -21,7 +21,7 @@
       upFixture:
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.5,0.25,0.5,0.5"
+          bounds: "-0.5,0.40,0.5,0.5" # 0.25 for pixel movement; 0.40 for tile movement
         mask:
         - FullTileMask
         layer:
@@ -30,7 +30,7 @@
       downFixture:
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.5,-0.25,0.5,-0.5"
+          bounds: "-0.5,-0.5,0.5,-0.40"
         mask:
         - FullTileMask
         layer:
