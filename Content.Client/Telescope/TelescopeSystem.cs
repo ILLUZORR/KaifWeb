@@ -27,22 +27,52 @@ public sealed class TelescopeSystem : SharedTelescopeSystem
     [Dependency] private readonly IConfigurationManager _cfg = default!;
 
     private ScalingViewport? _viewport;
-    private bool _holdLookUp;
     private bool _toggled;
+    private Vector2? _targetOffset = Vector2.Zero;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        _cfg.OnValueChanged(CCVars.HoldLookUp,
-            val =>
-            {
-                var input = val ? null : InputCmdHandler.FromDelegate(_ => _toggled = !_toggled);
-                _input.SetInputCommand(ContentKeyFunctions.LookUp, input);
-                _holdLookUp = val;
-                _toggled = false;
-            },
-            true);
+        var builder = CommandBinds.Builder;
+        builder
+            .Bind(ContentKeyFunctions.LookUp,
+                InputCmdHandler.FromDelegate(_ => ToggleTelescope()))
+            .Register<TelescopeSystem>();
+    }
+
+    public void ToggleTelescope()
+    {
+        var player = _player.LocalEntity;
+
+        if (!TryComp<EyeComponent>(player, out var eye) ||
+            !TryComp<TelescopeComponent>(player, out var telescope))
+        {
+            _toggled = false;
+            return;
+        }
+
+        var mousePos = _input.MouseScreenPosition;
+        var centerPos = _eyeManager.WorldToScreen(eye.Eye.Position.Position + eye.Offset);
+
+        // Only in viewport, not outside
+        if (_uiManager.MouseGetControl(mousePos) as ScalingViewport is { } viewport && viewport is null)
+        {
+            _toggled = false;
+            _targetOffset = Vector2.Zero;
+            return;
+        }
+
+        _toggled = !_toggled;
+        if (!_toggled || !_input.MouseScreenPosition.IsValid)
+        {
+            _targetOffset = Vector2.Zero;
+            return;
+        }
+        else
+        {
+            _targetOffset = mousePos.Position - centerPos;
+        }
     }
 
     public override void FrameUpdate(float frameTime)
@@ -69,15 +99,7 @@ public sealed class TelescopeSystem : SharedTelescopeSystem
 
         var offset = Vector2.Zero;
 
-        if (_holdLookUp)
-        {
-            if (_inputSystem.CmdStates.GetState(ContentKeyFunctions.LookUp) != BoundKeyState.Down)
-            {
-                RaiseEvent(offset);
-                return;
-            }
-        }
-        else if (!_toggled)
+        if (!_toggled)
         {
             RaiseEvent(offset);
             return;
@@ -88,12 +110,12 @@ public sealed class TelescopeSystem : SharedTelescopeSystem
         if (_uiManager.MouseGetControl(mousePos) as ScalingViewport is { } viewport)
             _viewport = viewport;
 
-        if (_viewport == null)
+        if (_viewport == null || _targetOffset == null)
             return;
 
         var centerPos = _eyeManager.WorldToScreen(eye.Eye.Position.Position + eye.Offset);
 
-        var diff = mousePos.Position - centerPos;
+        var diff = (centerPos + (Vector2) _targetOffset) - centerPos;
         var len = diff.Length();
 
         var size = _viewport.PixelSize;

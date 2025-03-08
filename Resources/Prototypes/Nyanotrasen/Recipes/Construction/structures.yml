@@ -23,7 +23,7 @@
   startNode: start
   targetNode: shuttleWall
   category: construction-category-structures
-  description: Keeps the air in and the greytide out.
+  description: The greatest material barrier against danger.
   icon:
     sprite: Structures/Walls/shuttle.rsi
     state: full
@@ -41,7 +41,7 @@
   startNode: start
   targetNode: shuttleInteriorWall
   category: construction-category-structures
-  description: Keeps the air in and the greytide out.
+  description: The greatest material barrier against danger.
   icon:
     sprite: Nyanotrasen/Structures/Walls/shuttleinterior.rsi
     state: full
@@ -60,7 +60,7 @@
   startNode: start
   targetNode: diagonalshuttleWall
   category: construction-category-structures
-  description: Keeps the air in and the greytide out.
+  description: The greatest material barrier against danger.
   icon:
     sprite: Structures/Walls/shuttle_diagonal.rsi
     state: state0
@@ -89,4 +89,3 @@
   objectType: Structure
   placementMode: SnapgridCenter
   canRotate: false
-  

@@ -15,7 +15,7 @@
   - type: Clothing
     sprite: Afgan/Weapons/Guns/sks.rsi
   - type: Telescope
-    divisor: 0.4
+    divisor: 0.20
   - type: GunWieldBonus
     minAngle: -20
     maxAngle: -18
