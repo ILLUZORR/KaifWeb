@@ -10,7 +10,6 @@ using Content.Client.Lobby;
 using Content.Client.Lobby.UI;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Controls;
-using Content.Client.UserInterface.Systems.MenuBar.Widgets;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.Input;
@@ -40,7 +39,7 @@ public sealed class AHelpUIController: UIController, IOnSystemChanged<BwoinkSyst
     [UISystemDependency] private readonly AudioSystem _audio = default!;
 
     private BwoinkSystem? _bwoinkSystem;
-    private MenuButton? GameAHelpButton => UIManager.GetActiveUIWidgetOrNull<GameTopMenuBar>()?.AHelpButton;
+    private MenuButton? GameAHelpButton = null; //UIManager.GetActiveUIWidgetOrNull<GameTopMenuBar>()?.AHelpButton;
     private WhiteLobbyTextButton? LobbyAHelpButton => (UIManager.ActiveScreen as LobbyGui)?.AHelpButton;
     public IAHelpUIHandler? UIHelper;
 

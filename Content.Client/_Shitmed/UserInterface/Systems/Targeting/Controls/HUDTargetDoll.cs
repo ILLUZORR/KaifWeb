@@ -32,22 +32,29 @@ public class HUDTargetDoll : HUDTextureRect
 
         var headButton = new HUDButton()
         {
-            Size = (6, 11),
-            Position = (13, 0)
+            Size = (6, 8),
+            Position = (13, 4)
         };
         AddChild(headButton);
 
+        var neckButton = new HUDButton()
+        {
+            Size = (6, 4),
+            Position = (13, 12)
+        };
+        AddChild(neckButton);
+
         var chestButton = new HUDButton()
         {
-            Size = (8, 13),
-            Position = (12, 10)
+            Size = (10, 16),
+            Position = (11, 14)
         };
         AddChild(chestButton);
 
         var groinButton = new HUDButton()
         {
-            Size = (12, 12),
-            Position = (10, 23)
+            Size = (10, 8),
+            Position = (11, 29)
         };
         AddChild(groinButton);
 
@@ -57,29 +64,29 @@ public class HUDTargetDoll : HUDTextureRect
 
         var rightArmButton = new HUDButton()
         {
-            Size = (8, 23),
-            Position = (4, 10)
+            Size = (6, 20),
+            Position = (6, 14)
         };
         AddChild(rightArmButton);
 
         var rightHandButton = new HUDButton()
         {
-            Size = (6, 10),
-            Position = (2, 34)
+            Size = (6, 6),
+            Position = (3, 31)
         };
         AddChild(rightHandButton);
 
         var leftArmButton = new HUDButton()
         {
-            Size = (8, 23),
-            Position = (20, 10),
+            Size = (6, 20),
+            Position = (20, 14),
         };
         AddChild(leftArmButton);
 
         var leftHandButton = new HUDButton()
         {
-            Size = (6, 10),
-            Position = (24, 34)
+            Size = (6, 6),
+            Position = (23, 31)
         };
         AddChild(leftHandButton);
 
@@ -89,29 +96,29 @@ public class HUDTargetDoll : HUDTextureRect
 
         var leftLegButton = new HUDButton()
         {
-            Size = (5, 28),
-            Position = (17, 31)
+            Size = (7, 24),
+            Position = (16, 34)
         };
         AddChild(leftLegButton);
 
         var leftFootButton = new HUDButton()
         {
-            Size = (8, 5),
-            Position = (17, 58)
+            Size = (7, 3),
+            Position = (16, 57)
         };
         AddChild(leftFootButton);
 
         var rightLegButton = new HUDButton()
         {
-            Size = (5, 28),
-            Position = (10, 31)
+            Size = (7, 24),
+            Position = (9, 34)
         };
         AddChild(rightLegButton);
 
         var rightFootButton = new HUDButton()
         {
-            Size = (8, 5),
-            Position = (8, 58)
+            Size = (7, 3),
+            Position = (9, 57)
         };
         AddChild(rightFootButton);
 
@@ -121,6 +128,7 @@ public class HUDTargetDoll : HUDTextureRect
         {
             // TODO: ADD EYE AND MOUTH TARGETING
             { TargetBodyPart.Head, headButton },
+            { TargetBodyPart.Neck, neckButton },
             { TargetBodyPart.Torso, chestButton },
             { TargetBodyPart.Groin, groinButton },
             { TargetBodyPart.LeftArm, leftArmButton },
@@ -154,7 +162,7 @@ public class HUDTargetDoll : HUDTextureRect
             */
         }
 
-        Background = _uiManager.CurrentTheme.ResolveTexture("target_doll");
+        Background = _uiManager.CurrentTheme.ResolveTexture("TargetDoll/target_doll");
     }
 
     public override void Draw(in ViewportUIDrawArgs args)
@@ -185,7 +193,7 @@ public class HUDTargetDoll : HUDTextureRect
         foreach (var item in _bodyPartControls)
         {
             string enumName = Enum.GetName(typeof(TargetBodyPart), item.Key) ?? "Unknown";
-            var texture = _uiManager.CurrentTheme.ResolveTexture($"target_{enumName.ToLowerInvariant()}_hover.png");
+            var texture = _uiManager.CurrentTheme.ResolveTexture($"TargetDoll/target_{enumName.ToLowerInvariant()}_hover.png");
             BodyPartTexturesHovered[item.Key] = texture;
         }
     }

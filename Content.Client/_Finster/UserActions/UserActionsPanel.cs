@@ -31,6 +31,9 @@ public sealed partial class UserActionsPanel : Control
 
         _controller.RegisterTab(ActionsTabControl);
         TabContainer.SetTabTitle(ActionsTabControl, Loc.GetString("user-action-control-tab-actions"));
+
+        _controller.RegisterTab(ConfigTabControl);
+        TabContainer.SetTabTitle(ConfigTabControl, Loc.GetString("user-action-control-tab-config"));
     }
 
     public void UpdateTabs()

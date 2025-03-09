@@ -38,7 +38,7 @@ public sealed class AdminUIController : UIController,
     [Dependency] private readonly VerbMenuUIController _verb = default!;
 
     private AdminMenuWindow? _window;
-    private MenuButton? AdminButton => UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.AdminButton;
+    private MenuButton? AdminButton => null; // UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.AdminButton;
     private PanicBunkerStatus? _panicBunker;
     private BabyJailStatus? _babyJail;
 
@@ -195,7 +195,7 @@ public sealed class AdminUIController : UIController,
         Toggle();
     }
 
-    private void Toggle()
+    public void Toggle()
     {
         if (_window is {IsOpen: true})
         {

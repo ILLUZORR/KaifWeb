@@ -88,7 +88,9 @@ namespace Content.Server.Pointing.EntitySystems
                         ? viewerPointedAtMessage
                         : viewerMessage;
 
-                RaiseNetworkEvent(new PopupEntityEvent(message, PopupType.Small, netSource), viewerEntity);
+                var popupType = viewerEntity == pointed ? PopupType.Medium : PopupType.Small;
+
+                RaiseNetworkEvent(new PopupEntityEvent(message, popupType, netSource, GetNetEntity(pointed)), viewerEntity);
             }
 
             _replay.RecordServerMessage(new PopupEntityEvent(viewerMessage, PopupType.Small, netSource));

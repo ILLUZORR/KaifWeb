@@ -4,6 +4,7 @@ using Content.Client.Alerts;
 using Content.Client.Gameplay;
 using Content.Client.UserInterface.Systems.Alerts.Controls;
 using Content.Client.UserInterface.Systems.Gameplay;
+using Content.Client.UserInterface.Systems.Viewport;
 using Content.Shared.Alert;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
@@ -40,7 +41,9 @@ public sealed class AlertsUIController : UIController, IOnStateEntered<GameplayS
         if (AlertsPanel.Texture is not null)
         {
             AlertsPanel.Size = (AlertsPanel.Texture.Size.X, AlertsPanel.Texture.Size.Y);
-            AlertsPanel.Position = (32 * (15 + 1) - AlertsPanel.Texture.Size.X, 0); // fucking calculus
+            AlertsPanel.Position = (
+                EyeManager.PixelsPerMeter * (ViewportUIController.ViewportHeight + 1) -
+                AlertsPanel.Texture.Size.X, 0); // fucking calculus
         }
 
         _vpUIManager.Root.AddChild(AlertsPanel);

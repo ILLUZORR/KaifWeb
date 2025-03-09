@@ -357,8 +357,8 @@ public sealed class ClientClothingSystem : ClothingSystem
             // in examine menu. So, i commented it.
             // We don't have plans to add monkeys into the game (with clothes),
             // so... i think it is unnecessary.
-            //if (slot == Jumpsuit)
-            //    layerData.Shader ??= "StencilDraw";
+            if (slot == Jumpsuit)
+                layerData.Shader ??= "StencilDraw";
 
             if (inventorySlots.HiddenSlots.Contains(slot))
                 layerData.Visible = false;

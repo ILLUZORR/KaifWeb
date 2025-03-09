@@ -28,7 +28,6 @@
             <controls:MainViewport Name="MainViewport"/>
             <BoxContainer Name="TopLeft" Access="Public" Orientation="Vertical">
                 <BoxContainer Orientation="Horizontal">
-                    <menuBar:GameTopMenuBar Name="TopBar" Access="Protected" />
                     <!-- Buffer so big votes don't skew it -->
                     <Control/>
                 </BoxContainer>
