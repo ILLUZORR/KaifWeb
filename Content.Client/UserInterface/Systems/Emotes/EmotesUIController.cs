@@ -26,15 +26,15 @@ public sealed class EmotesUIController : UIController, IOnStateChanged<GameplayS
 
     public void OnStateEntered(GameplayState state)
     {
-        CommandBinds.Builder
-            .Bind(ContentKeyFunctions.OpenEmotesMenu,
-                InputCmdHandler.FromDelegate(_ => ToggleEmotesMenu(false)))
-            .Register<EmotesUIController>();
+        //CommandBinds.Builder
+        //    .Bind(ContentKeyFunctions.OpenEmotesMenu,
+        //        InputCmdHandler.FromDelegate(_ => ToggleEmotesMenu(false)))
+        //    .Register<EmotesUIController>();
     }
 
     public void OnStateExited(GameplayState state)
     {
-        CommandBinds.Unregister<EmotesUIController>();
+        //CommandBinds.Unregister<EmotesUIController>();
     }
 
     private void ToggleEmotesMenu(bool centered)

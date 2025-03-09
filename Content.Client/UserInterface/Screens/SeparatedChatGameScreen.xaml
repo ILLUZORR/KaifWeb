@@ -55,7 +55,6 @@
                         <us:UserActionsPanel Name="UserActionsPanel" Access="Public"></us:UserActionsPanel>
                         <chat:ChatBox VerticalExpand="True" HorizontalExpand="True" Name="Chat" Access="Protected" MinSize="0 0"/>
                     </SplitContainer>
-                    <menuBar:GameTopMenuBar Name="TopBar" HorizontalExpand="True" Access="Protected" />
                 </BoxContainer>
             </BoxContainer>
         </PanelContainer>

@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client._Finster.Popups;
 using Content.Client.Chat.Managers;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
@@ -32,6 +33,7 @@ namespace Content.Client.Popups
         [Dependency] private readonly IChatManager _chatManager = default!;
         [Dependency] private readonly ExamineSystemShared _examine = default!;
         [Dependency] private readonly SharedTransformSystem _transform = default!;
+        [Dependency] private readonly PopupMessageSystem _popupMessage = default!;
 
         public IReadOnlyList<WorldPopupLabel> WorldLabels => _aliveWorldLabels;
         public IReadOnlyList<CursorPopupLabel> CursorLabels => _aliveCursorLabels;
@@ -74,7 +76,7 @@ namespace Content.Client.Popups
                 .RemoveOverlay<PopupOverlay>();
         }
 
-        private void PopupMessage(string? message, PopupType type, EntityCoordinates coordinates, EntityUid? entity, bool recordReplay)
+        private void PopupMessage(string? message, PopupType type, EntityCoordinates coordinates, EntityUid? entity, EntityUid? origin = null, bool recordReplay = true)
         {
             if (message == null)
                 return;
@@ -95,40 +97,32 @@ namespace Content.Client.Popups
 
             _aliveWorldLabels.Add(label);
 
-            var fontSizeDict = new Dictionary<PopupType, string>
-            {
-                { PopupType.Medium, "12" },
-                { PopupType.MediumCaution, "12" },
-                { PopupType.Large, "15" },
-                { PopupType.LargeCaution, "15" }
-            };
-
-            var fontsize = fontSizeDict.ContainsKey(type) ? fontSizeDict[type] : "10";
-            var fontcolor = (type == PopupType.LargeCaution || type == PopupType.MediumCaution || type == PopupType.SmallCaution) ? "c62828" : "aeabc4";
-
             if (isLogging)
             {
-                var formatedMessage = Loc.GetString("notice-command", ("fontsize", fontsize), ("fontcolor", fontcolor), ("message", message));
-                _chatManager.SendMessage($"notice {formatedMessage}", ChatSelectChannel.Console);
+                // TODO: Looks dirty, but it should combined into single system or something like
+                if (origin.HasValue)
+                    _popupMessage.DoIconMessage(origin.Value, message, type);
+                else
+                    _popupMessage.DoMessage(message, type);
             }
         }
 
         #region Abstract Method Implementations
         public override void PopupCoordinates(string? message, EntityCoordinates coordinates, PopupType type = PopupType.Small)
         {
-            PopupMessage(message, type, coordinates, null, true);
+            PopupMessage(message, type, coordinates, null);
         }
 
         public override void PopupCoordinates(string? message, EntityCoordinates coordinates, ICommonSession recipient, PopupType type = PopupType.Small)
         {
             if (_playerManager.LocalSession == recipient)
-                PopupMessage(message, type, coordinates, null, true);
+                PopupMessage(message, type, coordinates, null);
         }
 
         public override void PopupCoordinates(string? message, EntityCoordinates coordinates, EntityUid recipient, PopupType type = PopupType.Small)
         {
             if (_playerManager.LocalEntity == recipient)
-                PopupMessage(message, type, coordinates, null, true);
+                PopupMessage(message, type, coordinates, null);
         }
 
         private void PopupCursorInternal(string? message, PopupType type, bool recordReplay)
@@ -218,7 +212,7 @@ namespace Content.Client.Popups
         public override void PopupEntity(string? message, EntityUid uid, PopupType type = PopupType.Small)
         {
             if (TryComp(uid, out TransformComponent? transform))
-                PopupMessage(message, type, transform.Coordinates, uid, true);
+                PopupMessage(message, type, transform.Coordinates, uid);
         }
 
         public override void PopupPredicted(string? message, EntityUid uid, EntityUid? recipient, PopupType type = PopupType.Small)
@@ -244,7 +238,7 @@ namespace Content.Client.Popups
 
         private void OnPopupCoordinatesEvent(PopupCoordinatesEvent ev)
         {
-            PopupMessage(ev.Message, ev.Type, GetCoordinates(ev.Coordinates), null, false);
+            PopupMessage(ev.Message, ev.Type, GetCoordinates(ev.Coordinates), null, GetEntity(ev.Origin), false);
         }
 
         private void OnPopupEntityEvent(PopupEntityEvent ev)
@@ -252,7 +246,7 @@ namespace Content.Client.Popups
             var entity = GetEntity(ev.Uid);
 
             if (TryComp(entity, out TransformComponent? transform))
-                PopupMessage(ev.Message, ev.Type, transform.Coordinates, entity, false);
+                PopupMessage(ev.Message, ev.Type, transform.Coordinates, entity, GetEntity(ev.Origin), false);
         }
 
         private void OnRoundRestart(RoundRestartCleanupEvent ev)

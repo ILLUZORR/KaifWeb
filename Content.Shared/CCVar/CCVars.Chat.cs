@@ -68,4 +68,7 @@ public sealed partial class CCVars
             "",
             CVar.SERVER | CVar.SERVERONLY | CVar.ARCHIVE,
             "A message broadcast to each player that joins the lobby.");
+
+    public static readonly CVarDef<bool> ChatPointingVisuals =
+        CVarDef.Create("chat.icon_pointing_enable", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 }

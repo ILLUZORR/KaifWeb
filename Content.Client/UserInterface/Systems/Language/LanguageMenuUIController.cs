@@ -15,7 +15,7 @@ namespace Content.Client.UserInterface.Systems.Language;
 public sealed class LanguageMenuUIController : UIController, IOnStateEntered<GameplayState>, IOnStateExited<GameplayState>
 {
     public LanguageMenuWindow? LanguageWindow;
-    private MenuButton? LanguageButton => UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.LanguageButton;
+    private MenuButton? LanguageButton = null; //UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.LanguageButton;
 
     public void OnStateEntered(GameplayState state)
     {
@@ -71,7 +71,7 @@ public sealed class LanguageMenuUIController : UIController, IOnStateEntered<Gam
         ToggleWindow();
     }
 
-    private void ToggleWindow()
+    public void ToggleWindow()
     {
         if (LanguageWindow == null)
             return;

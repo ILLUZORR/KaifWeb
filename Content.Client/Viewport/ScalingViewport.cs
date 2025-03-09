@@ -310,7 +310,7 @@ public sealed class ScalingViewport : Control, IViewportControl
 
         if (FixedStretchSize == null)
         {
-            var (ratioX, ratioY) = ourSize / vpSize;
+            var (ratioX, ratioY) = ourSize / new Vector2(vpSize.X, vpSizeSized.Y);
             var ratio = 1f;
             switch (_ignoreDimension)
             {

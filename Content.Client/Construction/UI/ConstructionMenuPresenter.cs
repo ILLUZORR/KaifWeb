@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Numerics;
 using Content.Client.Stylesheets;
-using Content.Client.UserInterface.Systems.MenuBar.Widgets;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.Whitelist;
 using Robust.Client.GameObjects;
@@ -42,12 +41,13 @@ namespace Content.Client.Construction.UI
         private string _selectedCategory = string.Empty;
         private string _favoriteCatName = "construction-category-favorites";
         private string _forAllCategoryName = "construction-category-all";
+        private bool _avaible = false;
         private bool CraftingAvailable
         {
-            get => _uiManager.GetActiveUIWidget<GameTopMenuBar>().CraftingButton.Visible;
+            get => _avaible;
             set
             {
-                _uiManager.GetActiveUIWidget<GameTopMenuBar>().CraftingButton.Visible = value;
+                _avaible = value;
                 if (!value)
                     _constructionView.Close();
             }
@@ -98,7 +98,7 @@ namespace Content.Client.Construction.UI
 
             _placementManager.PlacementChanged += OnPlacementChanged;
 
-            _constructionView.OnClose += () => _uiManager.GetActiveUIWidget<GameTopMenuBar>().CraftingButton.Pressed = false;
+            //_constructionView.OnClose += () => _uiManager.GetActiveUIWidget<GameTopMenuBar>().CraftingButton.Pressed = false;
             _constructionView.ClearAllGhosts += (_, _) => _constructionSystem?.ClearAllGhosts();
             _constructionView.PopulateRecipes += OnViewPopulateRecipes;
             _constructionView.RecipeSelected += OnViewRecipeSelected;
@@ -496,10 +496,7 @@ namespace Content.Client.Construction.UI
             system.FlipConstructionPrototype += SystemFlipConstructionPrototype;
             system.CraftingAvailabilityChanged += SystemCraftingAvailabilityChanged;
             system.ConstructionGuideAvailable += SystemGuideAvailable;
-            if (_uiManager.GetActiveUIWidgetOrNull<GameTopMenuBar>() != null)
-            {
-                CraftingAvailable = system.CraftingEnabled;
-            }
+            CraftingAvailable = system.CraftingEnabled;
         }
 
         private void UnbindFromSystem()
@@ -525,6 +522,11 @@ namespace Content.Client.Construction.UI
 
         private void SystemOnToggleMenu(object? sender, EventArgs eventArgs)
         {
+            ToggleMenu();
+        }
+
+        public void ToggleMenu()
+        {
             if (!CraftingAvailable)
                 return;
 
@@ -533,7 +535,7 @@ namespace Content.Client.Construction.UI
                 if (IsAtFront)
                 {
                     WindowOpen = false;
-                    _uiManager.GetActiveUIWidget<GameTopMenuBar>().CraftingButton.SetClickPressed(false); // This does not call CraftingButtonToggled
+                    //_uiManager.GetActiveUIWidget<GameTopMenuBar>().CraftingButton.SetClickPressed(false); // This does not call CraftingButtonToggled
                 }
                 else
                     _constructionView.MoveToFront();
@@ -541,7 +543,7 @@ namespace Content.Client.Construction.UI
             else
             {
                 WindowOpen = true;
-                _uiManager.GetActiveUIWidget<GameTopMenuBar>().CraftingButton.SetClickPressed(true); // This does not call CraftingButtonToggled
+                //_uiManager.GetActiveUIWidget<GameTopMenuBar>().CraftingButton.SetClickPressed(true); // This does not call CraftingButtonToggled
             }
         }
 

@@ -1,5 +1,7 @@
 using Content.Client._ViewportGui.ViewportUserInterface.UI;
+using Content.Client.UserInterface.Systems.Viewport;
 using Content.Shared.Alert;
+using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Shared.Prototypes;
 
@@ -34,7 +36,9 @@ public class HUDAlertsPanel : HUDTextureRect
         AddChild(Container);
 
         GenericContainer = new HUDGenericAlertsControl();
-        GenericContainer.Position = (0, 416); // TODO: Should be configurated
+        // TODO: Should be configurated
+        GenericContainer.Position = (0,
+            (ViewportUIController.ViewportHeight * EyeManager.PixelsPerMeter) - EyeManager.PixelsPerMeter);
         AddChild(GenericContainer);
     }
 
