@@ -15,7 +15,6 @@ public sealed class EscapeContextUIController : UIController
     [Dependency] private readonly IInputManager _inputManager = default!;
 
     [Dependency] private readonly CloseRecentWindowUIController _closeRecentWindowUIController = default!;
-    [Dependency] private readonly EscapeUIController _escapeUIController = default!;
 
     public override void Initialize()
     {
@@ -28,10 +27,6 @@ public sealed class EscapeContextUIController : UIController
         if (_closeRecentWindowUIController.HasClosableWindow())
         {
             _closeRecentWindowUIController.CloseMostRecentWindow();
-        }
-        else
-        {
-            _escapeUIController.ToggleWindow();
         }
     }
 }

@@ -27,7 +27,7 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
     [UISystemDependency] private readonly SpriteSystem _sprite = default!;
 
     private CharacterWindow? _window;
-    private MenuButton? CharacterButton => UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.CharacterButton;
+    private MenuButton? CharacterButton = null; //UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.CharacterButton;
 
     public void OnStateEntered(GameplayState state)
     {
@@ -38,10 +38,10 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
 
 
 
-        CommandBinds.Builder
-            .Bind(ContentKeyFunctions.OpenCharacterMenu,
-                 InputCmdHandler.FromDelegate(_ => ToggleWindow()))
-             .Register<CharacterUIController>();
+        //CommandBinds.Builder
+        //    .Bind(ContentKeyFunctions.OpenCharacterMenu,
+        //         InputCmdHandler.FromDelegate(_ => ToggleWindow()))
+        //     .Register<CharacterUIController>();
     }
 
     public void OnStateExited(GameplayState state)
@@ -52,7 +52,7 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
             _window = null;
         }
 
-        CommandBinds.Unregister<CharacterUIController>();
+        //CommandBinds.Unregister<CharacterUIController>();
     }
 
     public void OnSystemLoaded(CharacterInfoSystem system)

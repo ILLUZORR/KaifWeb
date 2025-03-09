@@ -141,8 +141,7 @@
   name: alerts-good-pressure-name
   description: alerts-good-pressure-desc
   hudPositionX: 0
-  #hudPositionY: 224
-  hudPositionY: 208
+  hudPositionY: 224
   isGeneric: false
 
 - type: alert
@@ -156,8 +155,7 @@
   name: alerts-low-pressure-name
   description: alerts-low-pressure-desc
   hudPositionX: 0
-  #hudPositionY: 224
-  hudPositionY: 208
+  hudPositionY: 224
   isGeneric: false
 
 - type: alert
@@ -171,8 +169,7 @@
   name: alerts-high-pressure-name
   description: alerts-high-pressure-desc
   hudPositionX: 0
-  #hudPositionY: 224
-  hudPositionY: 208
+  hudPositionY: 224
   isGeneric: false
 
 # FINSTER EDIT
@@ -586,7 +583,7 @@
   name: alerts-surrend-name
   description: alerts-surrend-desc
   hudPositionX: 0
-  hudPositionY: 224
+  hudPositionY: 416
   isGeneric: false
 
 - type: alert
@@ -640,7 +637,7 @@
   maxSeverity: 4
   #hudPositionX: -192
   hudPositionX: -160
-  hudPositionY: 448
+  hudPositionY: 480
   isGeneric: false
 
 # FINSTER EDIT - Resist Alert
@@ -654,7 +651,7 @@
   name: alerts-resist-name
   description: alerts-resist-desc
   hudPositionX: 0
-  hudPositionY: 448
+  hudPositionY: 480
   isGeneric: false
 # FINSTER EDIT END
 
@@ -704,7 +701,7 @@
   minSeverity: 0
   maxSeverity: 1
   hudPositionX: -32
-  hudPositionY: 448
+  hudPositionY: 480
   isGeneric: false
 
 - type: alert
@@ -720,7 +717,7 @@
   minSeverity: 0
   maxSeverity: 1
   hudPositionX: -64
-  hudPositionY: 448
+  hudPositionY: 480
   isGeneric: false
 
 - type: alert
@@ -752,7 +749,7 @@
   minSeverity: 0
   maxSeverity: 1
   hudPositionX: -128
-  hudPositionY: 448
+  hudPositionY: 480
   isGeneric: false
 
 - type: alert
@@ -768,7 +765,7 @@
   minSeverity: 0
   maxSeverity: 1
   hudPositionX: -128
-  hudPositionY: 464
+  hudPositionY: 496
   isGeneric: false
 
 - type: alert
@@ -784,7 +781,7 @@
   minSeverity: 0
   maxSeverity: 1
   hudPositionX: -96
-  hudPositionY: 448
+  hudPositionY: 480
   isGeneric: false
 
 - type: alert
@@ -800,7 +797,7 @@
   minSeverity: 0
   maxSeverity: 1
   hudPositionX: -80
-  hudPositionY: 448
+  hudPositionY: 480
   isGeneric: false
 
 - type: alert
@@ -816,7 +813,7 @@
   minSeverity: 0
   maxSeverity: 1
   hudPositionX: -80
-  hudPositionY: 464
+  hudPositionY: 496
   isGeneric: false
 
 - type: alert
@@ -832,7 +829,7 @@
   minSeverity: 0
   maxSeverity: 1
   hudPositionX: -96
-  hudPositionY: 464
+  hudPositionY: 496
   isGeneric: false
 
 # Moods

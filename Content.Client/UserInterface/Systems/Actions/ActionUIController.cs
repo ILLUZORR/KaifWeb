@@ -157,8 +157,8 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         */
 
         builder
-            .Bind(ContentKeyFunctions.OpenActionsMenu,
-                InputCmdHandler.FromDelegate(_ => ToggleWindow()))
+            //.Bind(ContentKeyFunctions.OpenActionsMenu,
+            //    InputCmdHandler.FromDelegate(_ => ToggleWindow()))
             .BindBefore(EngineKeyFunctions.Use, new PointerInputCmdHandler(TargetingOnUse, outsidePrediction: true),
                     typeof(ConstructionSystem), typeof(DragDropSystem))
                 .BindBefore(EngineKeyFunctions.UIRightClick, new PointerInputCmdHandler(TargetingCancel, outsidePrediction: true))

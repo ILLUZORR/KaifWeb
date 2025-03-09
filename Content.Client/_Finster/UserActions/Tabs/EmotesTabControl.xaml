@@ -8,10 +8,11 @@
                          Margin="2"
                          MinHeight="100"
                          HScrollEnabled="False">
-            <BoxContainer Name="EmotesList"
-                          Orientation="Vertical"
+            <BoxContainer Orientation="Vertical"
                           HorizontalExpand="True"
                           Margin="2">
+                <GridContainer Name="EmotesList" Columns="3" HorizontalExpand="True">
+                </GridContainer>
             </BoxContainer>
         </ScrollContainer>
     </PanelContainer>

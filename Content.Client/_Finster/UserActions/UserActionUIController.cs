@@ -1,4 +1,5 @@
-﻿using Content.Client._Finster.UserActions.Tabs;
+﻿using Content.Client._Finster.UserActions.Controls;
+using Content.Client._Finster.UserActions.Tabs;
 using Robust.Client.UserInterface.Controllers;
 
 namespace Content.Client._Finster.UserActions;
@@ -42,4 +43,33 @@ public sealed class UserActionUIController : UIController, IOnSystemChanged<User
     }
 
     public List<BaseTabControl> GetTabs() => _tabs;
+
+    public bool TryGetControlFromConfig(string name, out IconButton? button)
+    {
+        button = null;
+
+        ConfigTabControl? configTab = null;
+        foreach (var tab in _tabs)
+        {
+            configTab = tab as ConfigTabControl;
+            if (configTab is null)
+                continue;
+            else
+                break;
+        }
+
+        if (configTab is null)
+            return false;
+
+        foreach (var buttons in configTab.MenuList.Children)
+        {
+            if (buttons.Name == name)
+            {
+                button = (IconButton) buttons;
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

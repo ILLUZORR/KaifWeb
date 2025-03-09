@@ -303,3 +303,6 @@ cmd-options-help = Usage: options [tab]
 ui-options-function-look-up = Look up/Take aim
 ui-options-function-auto-get-up = Automatically get up after falling
 ui-options-function-hold-look-up = Hold down the key to aim
+
+# ui-options-chat-icons-enable = Use icons in chat
+ui-options-chat-pointing-visuals-enable = Shows pointing with icons in chat

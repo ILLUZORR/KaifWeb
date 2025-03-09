@@ -20,7 +20,7 @@ public sealed class GuidebookUIController : UIController, IOnStateEntered<LobbyS
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
     private GuidebookWindow? _guideWindow;
-    private MenuButton? GuidebookButton => UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.GuidebookButton;
+    private MenuButton? GuidebookButton = null; //UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.GuidebookButton;
 
     public void OnStateEntered(LobbyState state)
     {
@@ -42,10 +42,10 @@ public sealed class GuidebookUIController : UIController, IOnStateEntered<LobbyS
         _guideWindow.OnOpen += OnWindowOpen;
 
         // setup keybinding
-        CommandBinds.Builder
-            .Bind(ContentKeyFunctions.OpenGuidebook,
-                InputCmdHandler.FromDelegate(_ => ToggleGuidebook()))
-            .Register<GuidebookUIController>();
+        //CommandBinds.Builder
+        //    .Bind(ContentKeyFunctions.OpenGuidebook,
+        //        InputCmdHandler.FromDelegate(_ => ToggleGuidebook()))
+        //    .Register<GuidebookUIController>();
     }
 
     public void OnStateExited(LobbyState state)
@@ -69,7 +69,7 @@ public sealed class GuidebookUIController : UIController, IOnStateEntered<LobbyS
         // shutdown
         _guideWindow.Dispose();
         _guideWindow = null;
-        CommandBinds.Unregister<GuidebookUIController>();
+        //CommandBinds.Unregister<GuidebookUIController>();
     }
 
     public void OnSystemLoaded(GuidebookSystem system)

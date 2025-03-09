@@ -184,13 +184,6 @@ binds:
   type: State
   key: Z
   mod1: Alt
-- function: OpenCharacterMenu
-  type: State
-  key: K
-- function: OpenEmotesMenu
-  type: State
-  mod1: Shift
-  key: Y
 - function: OpenLanguageMenu
   type: State
   key: L
@@ -241,9 +234,6 @@ binds:
 - function: OpenCraftingMenu
   type: State
   key: O
-- function: OpenGuidebook
-  type: State
-  key: NumpadNum0
 - function: OpenAHelp
   type: State
   key: F1
